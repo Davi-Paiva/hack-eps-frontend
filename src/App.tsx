@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
 import "./App.css";
+import ImportFarmPage from "./pages/ImportFarmPage";
+import ImportSlaughterHousePage from "./pages/ImportSlaughterHousePage";
 import MapPage from './pages/MapPage/MapPage'
 
 function App() {
@@ -10,14 +12,15 @@ function App() {
       <BrowserRouter>
         <NavBar />
 
-        <main className="main-content">
-          <Routes>
-            <Route path="*" element={<div>Home Page</div>} />
-            <Route path="/map" element={<MapPage />} />
-          </Routes>
-        </main>
-      </BrowserRouter>
-    </div>
+      <main style={{ paddingTop: "120px" }}>
+        <Routes>
+          <Route path="*" element={<div>Home Page</div>} />
+          <Route path="/map" element={<MapPage/>} />
+          <Route path="/import-farm" element={<ImportFarmPage/> } />
+          <Route path="/import-slaughterhouse" element={<ImportSlaughterHousePage/> } />
+        </Routes>
+      </main>
+    </BrowserRouter>
   );
 }
 
