@@ -15,6 +15,22 @@ export default function NavLinks(){
           Map
         </Button>
       </Link>
+      <Link to="/farms">
+        <Button variant="ghost" size="md" className="navbar-button">
+          Farms
+        </Button>
+      </Link>
+
+      <Link to="/slaughterhouses">
+        <Button variant="ghost" size="md" className="navbar-button">
+          Slaughterhouses
+        </Button>
+      </Link>
+          <Link to="/tables">
+            <Button variant="ghost" size="md" className="navbar-button">
+              Tables
+            </Button>
+          </Link>
     </HStack>
   );
 }
