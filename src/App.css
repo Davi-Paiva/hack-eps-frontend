@@ -1,6 +1,10 @@
 .app {
   width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  height: 100%;
+}
+
+.main-content {
+  width: 100%;
+  height: calc(100vh - 70px);
+  margin-top: 70px;
 }
