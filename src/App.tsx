@@ -12,15 +12,16 @@ function App() {
       <BrowserRouter>
         <NavBar />
 
-      <main style={{ paddingTop: "120px" }}>
-        <Routes>
-          <Route path="*" element={<div>Home Page</div>} />
-          <Route path="/map" element={<MapPage/>} />
-          <Route path="/import-farm" element={<ImportFarmPage/> } />
-          <Route path="/import-slaughterhouse" element={<ImportSlaughterHousePage/> } />
-        </Routes>
-      </main>
-    </BrowserRouter>
+        <main style={{ paddingTop: "120px" }}>
+          <Routes>
+            <Route path="*" element={<div>Home Page</div>} />
+            <Route path="/map" element={<MapPage/>} />
+            <Route path="/import-farm" element={<ImportFarmPage/> } />
+            <Route path="/import-slaughterhouse" element={<ImportSlaughterHousePage/> } />
+          </Routes>
+        </main>
+      </BrowserRouter>
+    </div>
   );
 }
 
