@@ -11,8 +11,8 @@ const theme = extendTheme({
   styles: {
     global: {
       body: {
-        bg: '#0f0f1a',
-        color: '#e5e7eb',
+        bg: '#1e1e1e',
+        color: '#d4d4d4',
       },
     },
   },
@@ -30,9 +30,9 @@ const theme = extendTheme({
       900: '#490d23',
     },
     dark: {
-      bg: '#0f0f1a',
-      surface: '#1a1a2e',
-      elevated: '#252538',
+      bg: '#1e1e1e',
+      surface: '#2d2d2d',
+      elevated: '#3a3a3a',
     },
   },
 })

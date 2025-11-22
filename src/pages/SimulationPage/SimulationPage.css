@@ -1,0 +1,37 @@
+.simulation-page {
+  min-height: calc(100vh - 70px);
+  background: #1e1e1e;
+}
+
+.simulation-title {
+  color: #d4d4d4;
+}
+
+.simulation-subtitle {
+  font-size: 1.125rem;
+  color: #a0a0a0;
+}
+
+.simulation-content {
+  background: #2d2d2d;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid #3a3a3a;
+  color: #d4d4d4;
+}
+
+.simulation-button {
+  background: linear-gradient(to right, #ff6b4a, #dd2a7b) !important;
+  color: white !important;
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  padding: 2rem !important;
+  height: auto !important;
+  transition: all 0.2s ease !important;
+}
+
+.simulation-button:hover {
+  background: linear-gradient(to right, #ff4d93, #dd2a7b) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(255, 107, 74, 0.3) !important;
+}

@@ -15,6 +15,12 @@ export default function NavLinks(){
           Map
         </Button>
       </Link>
+
+      <Link to="/simulation">
+        <Button variant="ghost" size="md" className="navbar-button">
+          Simulation
+        </Button>
+      </Link>
     </HStack>
   );
 }
