@@ -2,7 +2,6 @@ import { useRef, useEffect } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import './Map.css'
-import { addFarm } from '../../utils/modelHelpers'
 
 function Map() {
   const mapRef = useRef<mapboxgl.Map | null>(null)
