@@ -8,15 +8,17 @@ interface FarmCardProps {
 export default function FarmCard({ farm }: FarmCardProps) {
   return (
     <Box
-      bg="gray.800"
+      bg="#1a1a2e"
       borderRadius="lg"
       p={4}
       boxShadow="xl"
+      border="1px solid"
+      borderColor="rgba(255, 75, 147, 0.2)"
       minW="280px"
       maxW="320px"
     >
       <VStack align="stretch" spacing={3}>
-        <Heading size="md" color="blue.300">{farm.name}</Heading>
+        <Heading size="md" color="#ff4d93">{farm.name}</Heading>
         
         {farm.inventory_pigs !== undefined && (
           <HStack justify="space-between">
@@ -61,7 +63,7 @@ export default function FarmCard({ farm }: FarmCardProps) {
         {farm.price_per_kg !== undefined && (
           <HStack justify="space-between">
             <Text color="gray.400" fontSize="sm">Price per kg:</Text>
-            <Text color="green.300" fontWeight="bold">€{farm.price_per_kg}</Text>
+            <Text color="#ff6b4a" fontWeight="bold">€{farm.price_per_kg}</Text>
           </HStack>
         )}
       </VStack>

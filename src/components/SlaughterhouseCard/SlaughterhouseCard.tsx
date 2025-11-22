@@ -8,15 +8,17 @@ interface SlaughterhouseCardProps {
 export default function SlaughterhouseCard({ slaughterhouse }: SlaughterhouseCardProps) {
   return (
     <Box
-      bg="gray.800"
+      bg="#1a1a2e"
       borderRadius="lg"
       p={4}
       boxShadow="xl"
+      border="1px solid"
+      borderColor="rgba(221, 42, 123, 0.2)"
       minW="280px"
       maxW="320px"
     >
       <VStack align="stretch" spacing={3}>
-        <Heading size="md" color="red.300">{slaughterhouse.name}</Heading>
+        <Heading size="md" color="#dd2a7b">{slaughterhouse.name}</Heading>
         
         <HStack justify="space-between">
           <Text color="gray.400" fontSize="sm">Capacity/Day:</Text>
