@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
 import "./App.css";
 import ImportFarmPage from "./pages/ImportFarmPage";
+import ImportSlaughterHousePage from "./pages/ImportSlaughterHousePage";
 
 function App() {
   
@@ -14,6 +15,7 @@ function App() {
           <Route path="*" element={<div>Home Page</div>} />
           <Route path="/map" element={<div>Map Page</div>} />
           <Route path="/import-farm" element={<ImportFarmPage/> } />
+          <Route path="/import-slaughterhouse" element={<ImportSlaughterHousePage/> } />
         </Routes>
       </main>
     </BrowserRouter>

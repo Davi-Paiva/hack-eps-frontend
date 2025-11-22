@@ -1,0 +1,108 @@
+// src/components/ImportFarm.tsx
+import { useState } from "react";
+import { Box, Button, FormControl, FormLabel, Input, VStack, Text } from "@chakra-ui/react";
+import "./ImportSlaughterHouse.css";
+
+interface ImportSlaughterHouseProps {
+  endpoint: string; // backend endpoint to submit to
+}
+
+export default function ImportSlaughterHouse({ endpoint }: ImportSlaughterHouseProps) {
+  const [name, setName] = useState("");
+  const [lat, setLatitude] = useState("");
+  const [lon, setLongitude] = useState("");
+  const [capacity_per_day, setCapacity] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const payload = {
+      name,
+      lat: parseFloat(lat),
+      lon: parseFloat(lon),
+      capacity_per_day: parseInt(capacity_per_day),
+    };
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        setMessage("Farm successfully added!");
+        setName("");
+        setLatitude("");
+        setLongitude("");
+        setCapacity("");
+      } else {
+        setMessage("Failed to add farm. Try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage("Error connecting to server.");
+    }
+  };
+
+  return (
+    <Box className="import-slaughterhouse-container">
+      <VStack
+        as="form"
+        className="import-slaughterhouse-form"
+        spacing={6}
+        onSubmit={handleSubmit}
+      >
+        <Text fontSize="2xl" fontWeight="bold">
+          Import SlaughterHouse
+        </Text>
+
+        <FormControl isRequired>
+          <FormLabel>SlaughterHouse Name</FormLabel>
+          <Input
+            placeholder="SlaughterHouse Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </FormControl>
+
+        <FormControl isRequired>
+          <FormLabel>Latitude</FormLabel>
+          <Input
+            type="number"
+            placeholder="Latitude"
+            value={lat}
+            onChange={(e) => setLatitude(e.target.value)}
+          />
+        </FormControl>
+
+        <FormControl isRequired>
+          <FormLabel>Longitude</FormLabel>
+          <Input
+            type="number"
+            placeholder="Longitude"
+            value={lon}
+            onChange={(e) => setLongitude(e.target.value)}
+          />
+        </FormControl>
+
+        <FormControl isRequired>
+          <FormLabel>Capacity</FormLabel>
+          <Input
+            type="number"
+            placeholder="Capacity"
+            value={capacity_per_day}
+            onChange={(e) => setCapacity(e.target.value)}
+          />
+        </FormControl>
+
+        <Button type="submit" colorScheme="blue" size="lg">
+          Submit
+        </Button>
+
+        {message && <Text color="green.400">{message}</Text>}
+      </VStack>
+    </Box>
+  );
+}
