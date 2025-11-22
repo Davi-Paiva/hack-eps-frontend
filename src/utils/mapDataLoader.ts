@@ -11,11 +11,15 @@ export async function loadMapData(map: Map): Promise<void> {
     ])
     
     slaughterhouses.forEach(sh => {
-      addSlaughterhouse(map, sh.lon, sh.lat)
+      if (sh._id) {
+        addSlaughterhouse(map, sh.lon, sh.lat, sh._id)
+      }
     })
 
     farms.forEach(farm => {
-      addFarm(map, farm.lon, farm.lat)
+      if (farm._id) {
+        addFarm(map, farm.lon, farm.lat, farm._id)
+      }
     })
   } catch (error) {
     throw error

@@ -1,4 +1,5 @@
 export interface Slaughterhouse {
+  _id?: string
   name: string
   lat: number
   lon: number

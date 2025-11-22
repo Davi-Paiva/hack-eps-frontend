@@ -29,5 +29,19 @@ export const slaughterhouseService = {
       console.error('Error fetching slaughterhouses:', error)
       return []
     }
+  },
+
+  async getById(id: string): Promise<Slaughterhouse | null> {
+    try {
+      const response = await fetch(`${endpoint}/${id}`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch slaughterhouse')
+      }
+      const data: Slaughterhouse = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error fetching slaughterhouse:', error)
+      return null
+    }
   }
 }

@@ -29,5 +29,19 @@ export const farmService = {
       console.error('Error fetching farms:', error)
       return []
     }
+  },
+
+  async getById(id: string): Promise<Farm | null> {
+    try {
+      const response = await fetch(`${endpoint}/${id}`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch farm')
+      }
+      const data: Farm = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error fetching farm:', error)
+      return null
+    }
   }
 }

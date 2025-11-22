@@ -1,4 +1,5 @@
 export interface Farm {
+  _id?: string
   name: string
   lat: number
   lon: number
