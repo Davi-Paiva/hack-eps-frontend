@@ -28,14 +28,6 @@ function Map() {
       antialias: true
     })
 
-    // Add models once the map style is loaded
-    mapRef.current.on('style.load', () => {
-      if (mapRef.current) {
-        // Example: Add a farm at the map center
-        addFarm(mapRef.current, 0.623446499953393, 41.608433991761345)
-      }
-    })
-
     return () => {
       mapRef.current?.remove()
       mapRef.current = null

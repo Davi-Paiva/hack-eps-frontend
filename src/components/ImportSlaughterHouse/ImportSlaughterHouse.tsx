@@ -1,108 +1,63 @@
-// src/components/ImportFarm.tsx
-import { useState } from "react";
-import { Box, Button, FormControl, FormLabel, Input, VStack, Text } from "@chakra-ui/react";
-import "./ImportSlaughterHouse.css";
+import { useState } from 'react'
+import { Button, VStack, Heading, useToast } from '@chakra-ui/react'
+import { FormField } from '../FormField/FormField'
+import { slaughterhouseService } from '../../services/slaughterhouseService'
+import type { SlaughterhouseFormData } from '../../types/slaughterhouse'
 
-interface ImportSlaughterHouseProps {
-  endpoint: string; // backend endpoint to submit to
+interface ImportSlaughterhouseProps {
+  endpoint: string
+  onSuccess?: () => void
 }
 
-export default function ImportSlaughterHouse({ endpoint }: ImportSlaughterHouseProps) {
-  const [name, setName] = useState("");
-  const [lat, setLatitude] = useState("");
-  const [lon, setLongitude] = useState("");
-  const [capacity_per_day, setCapacity] = useState("");
-  const [message, setMessage] = useState("");
+export default function ImportSlaughterhouse({ endpoint, onSuccess }: ImportSlaughterhouseProps) {
+  const [form, setForm] = useState<SlaughterhouseFormData>({ 
+    name: '', 
+    lat: '', 
+    lon: '', 
+    capacity_per_day: '' 
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const toast = useToast()
+
+  const update = (field: keyof SlaughterhouseFormData) => (value: string) => 
+    setForm(prev => ({ ...prev, [field]: value }))
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
+    setIsSubmitting(true)
 
-    const payload = {
-      name,
-      lat: parseFloat(lat),
-      lon: parseFloat(lon),
-      capacity_per_day: parseInt(capacity_per_day),
-    };
+    const success = await slaughterhouseService.create(endpoint, {
+      name: form.name,
+      lat: parseFloat(form.lat),
+      lon: parseFloat(form.lon),
+      capacity_per_day: parseInt(form.capacity_per_day)
+    })
 
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+    toast({
+      title: success ? 'Slaughterhouse added successfully!' : 'Failed to add slaughterhouse',
+      status: success ? 'success' : 'error',
+      duration: 3000,
+      isClosable: true,
+    })
 
-      if (response.ok) {
-        setMessage("Farm successfully added!");
-        setName("");
-        setLatitude("");
-        setLongitude("");
-        setCapacity("");
-      } else {
-        setMessage("Failed to add farm. Try again.");
-      }
-    } catch (error) {
-      console.error(error);
-      setMessage("Error connecting to server.");
+    if (success) {
+      setForm({ name: '', lat: '', lon: '', capacity_per_day: '' })
+      onSuccess?.()
     }
-  };
+
+    setIsSubmitting(false)
+  }
 
   return (
-    <Box className="import-slaughterhouse-container">
-      <VStack
-        as="form"
-        className="import-slaughterhouse-form"
-        spacing={6}
-        onSubmit={handleSubmit}
-      >
-        <Text fontSize="2xl" fontWeight="bold">
-          Import SlaughterHouse
-        </Text>
-
-        <FormControl isRequired>
-          <FormLabel>SlaughterHouse Name</FormLabel>
-          <Input
-            placeholder="SlaughterHouse Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </FormControl>
-
-        <FormControl isRequired>
-          <FormLabel>Latitude</FormLabel>
-          <Input
-            type="number"
-            placeholder="Latitude"
-            value={lat}
-            onChange={(e) => setLatitude(e.target.value)}
-          />
-        </FormControl>
-
-        <FormControl isRequired>
-          <FormLabel>Longitude</FormLabel>
-          <Input
-            type="number"
-            placeholder="Longitude"
-            value={lon}
-            onChange={(e) => setLongitude(e.target.value)}
-          />
-        </FormControl>
-
-        <FormControl isRequired>
-          <FormLabel>Capacity</FormLabel>
-          <Input
-            type="number"
-            placeholder="Capacity"
-            value={capacity_per_day}
-            onChange={(e) => setCapacity(e.target.value)}
-          />
-        </FormControl>
-
-        <Button type="submit" colorScheme="blue" size="lg">
-          Submit
-        </Button>
-
-        {message && <Text color="green.400">{message}</Text>}
-      </VStack>
-    </Box>
-  );
+    <VStack as="form" spacing={5} w="full" onSubmit={handleSubmit}>
+      <Heading size="lg" mb={2}>Add Slaughterhouse</Heading>
+      <FormField label="Slaughterhouse Name" value={form.name} onChange={update('name')} placeholder="Enter name" />
+      <FormField label="Latitude" value={form.lat} onChange={update('lat')} placeholder="41.608433" isNumber />
+      <FormField label="Longitude" value={form.lon} onChange={update('lon')} placeholder="0.623446" isNumber />
+      <FormField label="Daily Capacity" value={form.capacity_per_day} onChange={update('capacity_per_day')} placeholder="1000" isNumber />
+      <Button type="submit" colorScheme="blue" size="lg" w="full" isLoading={isSubmitting}>
+        Add Slaughterhouse
+      </Button>
+    </VStack>
+  )
 }

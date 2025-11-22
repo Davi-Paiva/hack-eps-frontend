@@ -1,108 +1,58 @@
-// src/components/ImportFarm.tsx
-import { useState } from "react";
-import { Box, Button, FormControl, FormLabel, Input, VStack, Text } from "@chakra-ui/react";
-import "./ImportFarm.css";
+import { useState } from 'react'
+import { Button, VStack, Heading, useToast } from '@chakra-ui/react'
+import { FormField } from '../FormField/FormField'
+import { farmService } from '../../services/farmService'
+import type { FarmFormData } from '../../types/farm'
 
 interface ImportFarmProps {
-  endpoint: string; // backend endpoint to submit to
+  endpoint: string
+  onSuccess?: () => void
 }
 
-export default function ImportFarm({ endpoint }: ImportFarmProps) {
-  const [name, setName] = useState("");
-  const [lat, setLatitude] = useState("");
-  const [lon, setLongitude] = useState("");
-  const [capacity, setCapacity] = useState("");
-  const [message, setMessage] = useState("");
+export default function ImportFarm({ endpoint, onSuccess }: ImportFarmProps) {
+  const [form, setForm] = useState<FarmFormData>({ name: '', lat: '', lon: '', capacity: '' })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const toast = useToast()
+
+  const update = (field: keyof FarmFormData) => (value: string) => 
+    setForm(prev => ({ ...prev, [field]: value }))
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
+    setIsSubmitting(true)
 
-    const payload = {
-      name,
-      lat: parseFloat(lat),
-      lon: parseFloat(lon),
-      capacity: parseInt(capacity),
-    };
+    const success = await farmService.create(endpoint, {
+      name: form.name,
+      lat: parseFloat(form.lat),
+      lon: parseFloat(form.lon),
+      capacity: parseInt(form.capacity)
+    })
 
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+    toast({
+      title: success ? 'Farm added successfully!' : 'Failed to add farm',
+      status: success ? 'success' : 'error',
+      duration: 3000,
+      isClosable: true,
+    })
 
-      if (response.ok) {
-        setMessage("Farm successfully added!");
-        setName("");
-        setLatitude("");
-        setLongitude("");
-        setCapacity("");
-      } else {
-        setMessage("Failed to add farm. Try again.");
-      }
-    } catch (error) {
-      console.error(error);
-      setMessage("Error connecting to server.");
+    if (success) {
+      setForm({ name: '', lat: '', lon: '', capacity: '' })
+      onSuccess?.()
     }
-  };
+
+    setIsSubmitting(false)
+  }
 
   return (
-    <Box className="import-farm-container">
-      <VStack
-        as="form"
-        className="import-farm-form"
-        spacing={6}
-        onSubmit={handleSubmit}
-      >
-        <Text fontSize="2xl" fontWeight="bold">
-          Import Farm
-        </Text>
-
-        <FormControl isRequired>
-          <FormLabel>Farm Name</FormLabel>
-          <Input
-            placeholder="Farm Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </FormControl>
-
-        <FormControl isRequired>
-          <FormLabel>Latitude</FormLabel>
-          <Input
-            type="number"
-            placeholder="Latitude"
-            value={lat}
-            onChange={(e) => setLatitude(e.target.value)}
-          />
-        </FormControl>
-
-        <FormControl isRequired>
-          <FormLabel>Longitude</FormLabel>
-          <Input
-            type="number"
-            placeholder="Longitude"
-            value={lon}
-            onChange={(e) => setLongitude(e.target.value)}
-          />
-        </FormControl>
-
-        <FormControl isRequired>
-          <FormLabel>Capacity</FormLabel>
-          <Input
-            type="number"
-            placeholder="Capacity"
-            value={capacity}
-            onChange={(e) => setCapacity(e.target.value)}
-          />
-        </FormControl>
-
-        <Button type="submit" colorScheme="blue" size="lg">
-          Submit
-        </Button>
-
-        {message && <Text color="green.400">{message}</Text>}
-      </VStack>
-    </Box>
-  );
+    <VStack as="form" spacing={5} w="full" onSubmit={handleSubmit}>
+      <Heading size="lg" mb={2}>Add Farm</Heading>
+      <FormField label="Farm Name" value={form.name} onChange={update('name')} placeholder="Enter farm name" />
+      <FormField label="Latitude" value={form.lat} onChange={update('lat')} placeholder="41.608433" isNumber />
+      <FormField label="Longitude" value={form.lon} onChange={update('lon')} placeholder="0.623446" isNumber />
+      <FormField label="Capacity" value={form.capacity} onChange={update('capacity')} placeholder="1000" isNumber />
+      <Button type="submit" colorScheme="blue" size="lg" w="full" isLoading={isSubmitting}>
+        Add Farm
+      </Button>
+    </VStack>
+  )
 }
