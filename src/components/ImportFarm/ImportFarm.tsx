@@ -19,8 +19,8 @@ export default function ImportFarm({ endpoint }: ImportFarmProps) {
 
     const payload = {
       name,
-      latitude: parseFloat(lat),
-      longitude: parseFloat(lon),
+      lat: parseFloat(lat),
+      lon: parseFloat(lon),
       capacity: parseInt(capacity),
     };
 
