@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import {
   Modal,
   ModalOverlay,
@@ -11,6 +11,8 @@ import Map from "../../components/Map/Map"
 import AddButton from "../../components/AddButton/AddButton"
 import ImportFarm from "../../components/ImportFarm/ImportFarm"
 import ImportSlaughterhouse from "../../components/ImportSlaughterHouse/ImportSlaughterHouse"
+import { MapProvider, useMap } from '../../contexts/MapContext'
+import { loadMapData } from '../../utils/mapDataLoader'
 import './MapPage.css'
 
 function FormModal({ isOpen, onClose, children }: { isOpen: boolean; onClose: () => void; children: ReactNode }) {
@@ -25,9 +27,25 @@ function FormModal({ isOpen, onClose, children }: { isOpen: boolean; onClose: ()
   )
 }
 
-function MapPage() {
+function MapContent() {
+  const { mapRef } = useMap()
   const farmModal = useDisclosure()
   const slaughterhouseModal = useDisclosure()
+
+  useEffect(() => {
+    async function load() {
+      if (!mapRef.current) return
+      await loadMapData(mapRef.current)
+    }
+
+    if (mapRef.current) {
+      if (mapRef.current.loaded()) {
+        load()
+      } else {
+        mapRef.current.on('load', load)
+      }
+    }
+  }, [mapRef])
 
   const handleAddCSV = () => {
     console.log('Add CSV clicked')
@@ -44,13 +62,21 @@ function MapPage() {
       />
       
       <FormModal isOpen={farmModal.isOpen} onClose={farmModal.onClose}>
-        <ImportFarm endpoint="/api/farms" onSuccess={farmModal.onClose} />
+        <ImportFarm onSuccess={farmModal.onClose} />
       </FormModal>
 
       <FormModal isOpen={slaughterhouseModal.isOpen} onClose={slaughterhouseModal.onClose}>
-        <ImportSlaughterhouse endpoint="/api/slaughterhouses" onSuccess={slaughterhouseModal.onClose} />
+        <ImportSlaughterhouse onSuccess={slaughterhouseModal.onClose} />
       </FormModal>
     </div>
+  )
+}
+
+function MapPage() {
+  return (
+    <MapProvider>
+      <MapContent />
+    </MapProvider>
   )
 }
 

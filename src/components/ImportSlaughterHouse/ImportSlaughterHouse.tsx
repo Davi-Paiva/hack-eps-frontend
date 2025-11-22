@@ -5,11 +5,10 @@ import { slaughterhouseService } from '../../services/slaughterhouseService'
 import type { SlaughterhouseFormData } from '../../types/slaughterhouse'
 
 interface ImportSlaughterhouseProps {
-  endpoint: string
   onSuccess?: () => void
 }
 
-export default function ImportSlaughterhouse({ endpoint, onSuccess }: ImportSlaughterhouseProps) {
+export default function ImportSlaughterhouse({ onSuccess }: ImportSlaughterhouseProps) {
   const [form, setForm] = useState<SlaughterhouseFormData>({ 
     name: '', 
     lat: '', 
@@ -26,7 +25,7 @@ export default function ImportSlaughterhouse({ endpoint, onSuccess }: ImportSlau
     e.preventDefault()
     setIsSubmitting(true)
 
-    const success = await slaughterhouseService.create(endpoint, {
+    const success = await slaughterhouseService.create({
       name: form.name,
       lat: parseFloat(form.lat),
       lon: parseFloat(form.lon),

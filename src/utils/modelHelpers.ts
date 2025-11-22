@@ -28,27 +28,27 @@ export function addFarm(
     layerId,
     '/models/Farm.glb',
     longitude,
-    latitude
+    latitude,
+    0,
+    [Math.PI / 2, Math.PI, 0]
   )
   map.addLayer(layer)
 }
 
-export function addCustomModel(
+export function addSlaughterhouse(
   map: Map,
-  modelPath: string,
   longitude: number,
-  latitude: number,
-  altitude = 0,
-  rotation: [number, number, number] = [Math.PI / 2, 0, 0]
+  latitude: number
 ): void {
-  const layerId = `custom-model-${modelCounter++}`
+  const layerId = `slaughterhouse-model-${modelCounter++}`
   const layer = createThreeJSLayer(
     layerId,
-    modelPath,
+    '/models/SlaughterHouse.glb',
     longitude,
     latitude,
-    altitude,
-    rotation
+    0,
+    [Math.PI / 2, 0, 0],
+    400
   )
   map.addLayer(layer)
 }

@@ -25,7 +25,8 @@ export function createThreeJSLayer(
   longitude: number,
   latitude: number,
   altitude = 0,
-  rotation: [number, number, number] = [Math.PI / 2, 0, 0]
+  rotation: [number, number, number] = [Math.PI / 2, 0, 0],
+  scaleMultiplier = 1
 ): CustomLayerWithThree {
   const modelAsMercatorCoordinate = mapboxgl.MercatorCoordinate.fromLngLat(
     [longitude, latitude],
@@ -72,7 +73,7 @@ export function createThreeJSLayer(
           }
         },
         undefined,
-        (error) => console.error(`Error loading model ${modelPath}:`, error)
+        (error) => console.error(`✗ Error loading model ${modelPath}:`, error)
       )
 
       this.map = map
@@ -86,6 +87,14 @@ export function createThreeJSLayer(
     },
     render: function (_gl, matrix) {
       if (!this.camera || !this.renderer || !this.scene || !this.map) return
+
+      const zoom = this.map.getZoom()
+      
+      const baseZoom = 16
+      const zoomDiff = baseZoom - zoom
+      const zoomScale = zoomDiff > 0 ? Math.pow(2, zoomDiff * 0.7) : 1
+      
+      const finalScale = modelTransform.scale * zoomScale * scaleMultiplier
 
       const rotationX = new THREE.Matrix4().makeRotationAxis(
         new THREE.Vector3(1, 0, 0),
@@ -109,9 +118,9 @@ export function createThreeJSLayer(
         )
         .scale(
           new THREE.Vector3(
-            modelTransform.scale,
-            -modelTransform.scale,
-            modelTransform.scale
+            finalScale,
+            -finalScale,
+            finalScale
           )
         )
         .multiply(rotationX)

@@ -2,9 +2,10 @@ import { useRef, useEffect } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import './Map.css'
+import { useMap } from '../../contexts/MapContext'
 
 function Map() {
-  const mapRef = useRef<mapboxgl.Map | null>(null)
+  const { mapRef } = useMap()
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {

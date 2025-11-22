@@ -5,11 +5,10 @@ import { farmService } from '../../services/farmService'
 import type { FarmFormData } from '../../types/farm'
 
 interface ImportFarmProps {
-  endpoint: string
   onSuccess?: () => void
 }
 
-export default function ImportFarm({ endpoint, onSuccess }: ImportFarmProps) {
+export default function ImportFarm({ onSuccess }: ImportFarmProps) {
   const [form, setForm] = useState<FarmFormData>({ name: '', lat: '', lon: '', capacity: '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const toast = useToast()
@@ -21,7 +20,7 @@ export default function ImportFarm({ endpoint, onSuccess }: ImportFarmProps) {
     e.preventDefault()
     setIsSubmitting(true)
 
-    const success = await farmService.create(endpoint, {
+    const success = await farmService.create({
       name: form.name,
       lat: parseFloat(form.lat),
       lon: parseFloat(form.lon),
