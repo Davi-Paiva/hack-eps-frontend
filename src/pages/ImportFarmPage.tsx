@@ -4,7 +4,7 @@ import ImportFarm from "../components/ImportFarm/ImportFarm";
 
 export default function ImportFarmPage() {
   // Replace with your backend endpoint URL
-  const backendEndpoint = "http://localhost:5000/init-farm"; 
+  const backendEndpoint = "http://localhost:8000/api/farms/init-farm"; 
 
   return (
     <>

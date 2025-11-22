@@ -9,8 +9,8 @@ interface ImportFarmProps {
 
 export default function ImportFarm({ endpoint }: ImportFarmProps) {
   const [name, setName] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
+  const [lat, setLatitude] = useState("");
+  const [lon, setLongitude] = useState("");
   const [capacity, setCapacity] = useState("");
   const [message, setMessage] = useState("");
 
@@ -19,8 +19,8 @@ export default function ImportFarm({ endpoint }: ImportFarmProps) {
 
     const payload = {
       name,
-      latitude: parseFloat(latitude),
-      longitude: parseFloat(longitude),
+      latitude: parseFloat(lat),
+      longitude: parseFloat(lon),
       capacity: parseInt(capacity),
     };
 
@@ -72,7 +72,7 @@ export default function ImportFarm({ endpoint }: ImportFarmProps) {
           <Input
             type="number"
             placeholder="Latitude"
-            value={latitude}
+            value={lat}
             onChange={(e) => setLatitude(e.target.value)}
           />
         </FormControl>
@@ -82,7 +82,7 @@ export default function ImportFarm({ endpoint }: ImportFarmProps) {
           <Input
             type="number"
             placeholder="Longitude"
-            value={longitude}
+            value={lon}
             onChange={(e) => setLongitude(e.target.value)}
           />
         </FormControl>
