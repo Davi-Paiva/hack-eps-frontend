@@ -9,14 +9,14 @@ export function addClickableMarker(
   latitude: number
 ): void {
   const el = document.createElement('div')
-  el.style.width = '50px'
-  el.style.height = '50px'
+  el.style.width = '80px'
+  el.style.height = '80px'
   el.style.cursor = 'pointer'
   el.style.background = 'transparent'
   
   el.addEventListener('click', (e) => {
     e.stopPropagation()
-    triggerEntityClick(layerId)
+    triggerEntityClick(layerId, e.clientX, e.clientY)
   })
 
   new mapboxgl.Marker(el)

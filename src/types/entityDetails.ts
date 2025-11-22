@@ -1,4 +1,4 @@
-export interface Farm {
+export interface FarmDetails {
   _id?: string
   name: string
   lat: number
@@ -13,9 +13,10 @@ export interface Farm {
   farm_id?: string
 }
 
-export interface FarmFormData {
+export interface SlaughterhouseDetails {
+  _id?: string
   name: string
-  lat: string
-  lon: string
-  capacity: string
+  lat: number
+  lon: number
+  capacity_per_day: number
 }

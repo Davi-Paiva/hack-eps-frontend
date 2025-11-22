@@ -4,7 +4,7 @@ import type { MapEntity } from '../types/mapEntity'
 
 const entityRegistry = new Map<string, MapEntity>()
 
-let clickCallbacks: Array<(entity: MapEntity) => void> = []
+let clickCallbacks: Array<(entity: MapEntity, position: { x: number; y: number }) => void> = []
 
 export function registerEntity(layerId: string, entity: MapEntity): void {
   entityRegistry.set(layerId, entity)
@@ -14,11 +14,11 @@ export function getEntityByLayerId(layerId: string): MapEntity | undefined {
   return entityRegistry.get(layerId)
 }
 
-export function onEntityClick(callback: (entity: MapEntity) => void): void {
+export function onEntityClick(callback: (entity: MapEntity, position: { x: number; y: number }) => void): void {
   clickCallbacks.push(callback)
 }
 
-export function triggerEntityClick(layerId: string): void {
+export function triggerEntityClick(layerId: string, clickX: number, clickY: number): void {
   const entity = entityRegistry.get(layerId)
   if (entity) {
     if (entity.type === 'farm') {
@@ -31,6 +31,6 @@ export function triggerEntityClick(layerId: string): void {
           console.log('Slaughterhouse data on click:', shData)
         })
     }
-    clickCallbacks.forEach(callback => callback(entity))
+    clickCallbacks.forEach(callback => callback(entity, { x: clickX, y: clickY }))
   }
 }
