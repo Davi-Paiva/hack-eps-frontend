@@ -1,18 +1,15 @@
 import React from 'react'
-import { Box, VStack, Flex } from '@chakra-ui/react'
+import { VStack, Button } from '@chakra-ui/react'
 import FarmTable from '../../components/FarmTable/FarmTable'
-import BoxCard from '../../components/BoxCard/BoxCard'
 import SearchInput from '../../components/SearchInput/SearchInput'
-import EditButton from '../../components/EditButton/EditButton'
-import DeleteButton from '../../components/DeleteButton/DeleteButton'
 import { farmService } from '../../services/farmService'
 import FarmAddModal from '../../components/FarmAddModal/FarmAddModal'
-import { Button } from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
 import FarmEditModal from '../../components/FarmEditModal/FarmEditModal'
 import DeleteConfirm from '../../components/DeleteConfirm/DeleteConfirm'
 import resolveId from '../../utils/idResolver'
 import type { Farm } from '../../types/farm'
+import './FarmsPage.css'
 
 const FarmsPage: React.FC = () => {
   const [query, setQuery] = React.useState('')
@@ -54,31 +51,62 @@ const FarmsPage: React.FC = () => {
   }
 
   return (
-    <Box p={6}>
-      <BoxCard title="Farms">
-        <VStack spacing={4} align="stretch">
-          <Box w={{ base: '100%', md: '50%' }}>
-            <Flex align="center">
-              <Box flex={1}>
-                <SearchInput
-                  placeholder="Search farms..."
-                  value={query}
-                  onChange={setQuery}
-                  onSearch={(v) => setQuery(v)}
-                />
-              </Box>
-              <Box ml={3} display="flex" gap={2} alignItems="center">
-                <Button leftIcon={<AddIcon />} size="sm" colorScheme="green" onClick={() => setIsAddOpen(true)}>
-                  Add Farm
-                </Button>
-                <EditButton onClick={() => setIsEditOpen(true)} isDisabled={!selectedFarm} />
-                <DeleteButton onClick={handleDelete} isDisabled={!selectedFarm} size="sm" />
-              </Box>
-            </Flex>
-          </Box>
-          <FarmTable searchQuery={query} onRowSelect={setSelectedFarm} reloadKey={reloadKey} />
+    <div className="farms-page">
+      <div className="farms-container">
+        <VStack spacing={6} align="stretch">
+          <div className="farms-header">
+            <div className="farms-title">Farms</div>
+            <div className="farms-title-accent" />
+          </div>
+          
+          <div className="farms-controls">
+            <div className="farms-search">
+              <SearchInput
+                placeholder="Search farms..."
+                value={query}
+                onChange={setQuery}
+                onSearch={(v) => setQuery(v)}
+              />
+            </div>
+            <div className="farms-buttons">
+              <Button 
+                leftIcon={<AddIcon />} 
+                size="md" 
+                bg="linear-gradient(to right, #fb923c, #f472b6)"
+                color="white"
+                _hover={{ bg: "linear-gradient(to right, #ff6b4a, #dd2a7b)", transform: "translateY(-2px)", boxShadow: "0 10px 20px rgba(251, 146, 60, 0.3)" }}
+                onClick={() => setIsAddOpen(true)}
+              >
+                Add Farm
+              </Button>
+              <Button
+                size="md"
+                bg="linear-gradient(to right, #fbbf24, #f59e0b)"
+                color="white"
+                _hover={{ bg: "linear-gradient(to right, #f59e0b, #d97706)", transform: "translateY(-2px)", boxShadow: "0 10px 20px rgba(251, 191, 36, 0.3)" }}
+                onClick={() => setIsEditOpen(true)}
+                isDisabled={!selectedFarm}
+              >
+                Edit
+              </Button>
+              <Button
+                size="md"
+                bg="linear-gradient(to right, #ef4444, #dc2626)"
+                color="white"
+                _hover={{ bg: "linear-gradient(to right, #dc2626, #b91c1c)", transform: "translateY(-2px)", boxShadow: "0 10px 20px rgba(239, 68, 68, 0.3)" }}
+                onClick={handleDelete}
+                isDisabled={!selectedFarm}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+          
+          <div className="farms-table-container">
+            <FarmTable searchQuery={query} onRowSelect={setSelectedFarm} reloadKey={reloadKey} />
+          </div>
         </VStack>
-      </BoxCard>
+      </div>
       <FarmEditModal
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
@@ -103,7 +131,7 @@ const FarmsPage: React.FC = () => {
         title="Delete Farm"
         description={`Are you sure you want to delete "${selectedFarm?.name}"? This action cannot be undone.`}
       />
-    </Box>
+    </div>
   )
 }
 

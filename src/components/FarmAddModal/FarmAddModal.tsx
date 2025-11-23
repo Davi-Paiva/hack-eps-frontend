@@ -63,41 +63,41 @@ const FarmAddModal: React.FC<Props> = ({ isOpen, onClose, onCreateSuccess }) => 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Add Farm</ModalHeader>
-        <ModalCloseButton />
+      <ModalContent bg="black" borderColor="gray.700" borderWidth="1px">
+        <ModalHeader color="white">Add Farm</ModalHeader>
+        <ModalCloseButton color="white" />
         <ModalBody>
           <VStack spacing={4} align="stretch">
             <FormControl>
-              <FormLabel>Name</FormLabel>
-              <Input value={name} onChange={(e) => setName(e.target.value)} />
+              <FormLabel color="gray.300">Name</FormLabel>
+              <Input value={name} onChange={(e) => setName(e.target.value)} bg="gray.800" color="white" borderColor="gray.600" />
             </FormControl>
             <FormControl>
-              <FormLabel>Latitude</FormLabel>
+              <FormLabel color="gray.300">Latitude</FormLabel>
               <NumberInput value={lat} onChange={(v) => setLat(v)}>
-                <NumberInputField />
+                <NumberInputField bg="gray.800" color="white" borderColor="gray.600" />
               </NumberInput>
             </FormControl>
             <FormControl>
-              <FormLabel>Longitude</FormLabel>
+              <FormLabel color="gray.300">Longitude</FormLabel>
               <NumberInput value={lon} onChange={(v) => setLon(v)}>
-                <NumberInputField />
+                <NumberInputField bg="gray.800" color="white" borderColor="gray.600" />
               </NumberInput>
             </FormControl>
             <FormControl>
-              <FormLabel>Capacity</FormLabel>
+              <FormLabel color="gray.300">Capacity</FormLabel>
               <NumberInput value={capacity} onChange={(v) => setCapacity(v)}>
-                <NumberInputField />
+                <NumberInputField bg="gray.800" color="white" borderColor="gray.600" />
               </NumberInput>
             </FormControl>
           </VStack>
         </ModalBody>
 
         <ModalFooter>
-          <Button variant="ghost" mr={3} onClick={onClose} isDisabled={saving}>
+          <Button variant="ghost" mr={3} onClick={onClose} isDisabled={saving} color="white" _hover={{ bg: "gray.700" }}>
             Cancel
           </Button>
-          <Button colorScheme="blue" onClick={handleCreate} isLoading={saving}>
+          <Button bg="linear-gradient(to right, #fb923c, #f472b6)" color="white" onClick={handleCreate} isLoading={saving} _hover={{ bg: "linear-gradient(to right, #ff6b4a, #dd2a7b)" }}>
             Create
           </Button>
         </ModalFooter>

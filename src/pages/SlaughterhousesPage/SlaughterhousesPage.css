@@ -1,0 +1,122 @@
+.slaughterhouses-page {
+  padding: 2rem;
+  background: #1e1e1e;
+  min-height: 100vh;
+}
+
+.slaughterhouses-container {
+  background: black;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(31, 41, 55, 1);
+}
+
+.slaughterhouses-header {
+  margin-bottom: 1.5rem;
+}
+
+.slaughterhouses-title {
+  font-size: 1.875rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.slaughterhouses-title-accent {
+  height: 2px;
+  width: 60px;
+  background: linear-gradient(to right, #fb923c, #f472b6);
+  border-radius: 9999px;
+}
+
+.slaughterhouses-controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.slaughterhouses-search {
+  flex: 1;
+}
+
+.slaughterhouses-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.slaughterhouses-table-container {
+  background: #1a1a1a;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  border: 1px solid rgba(31, 41, 55, 1);
+}
+
+.btn-gradient-green {
+  background: linear-gradient(to right, #fb923c, #f472b6);
+  color: white;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-gradient-green:hover {
+  background: linear-gradient(to right, #ff6b4a, #dd2a7b);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(251, 146, 60, 0.3);
+}
+
+.btn-gradient-blue {
+  background: linear-gradient(to right, #fbbf24, #f59e0b);
+  color: white;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-gradient-blue:hover {
+  background: linear-gradient(to right, #f59e0b, #d97706);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3);
+}
+
+.btn-gradient-red {
+  background: linear-gradient(to right, #ef4444, #dc2626);
+  color: white;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-gradient-red:hover {
+  background: linear-gradient(to right, #dc2626, #b91c1c);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+}
+
+@media (max-width: 768px) {
+  .slaughterhouses-controls {
+    flex-direction: column;
+  }
+  
+  .slaughterhouses-search {
+    width: 100%;
+  }
+  
+  .slaughterhouses-buttons {
+    width: 100%;
+    justify-content: stretch;
+  }
+  
+  .slaughterhouses-buttons button {
+    flex: 1;
+  }
+}
