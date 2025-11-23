@@ -204,7 +204,7 @@ export default function SimulationPage() {
                   <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={4}>
                     {/* Beneficio bruto - VERDE + ↑ */}
                     <Box className="simulation-card">
-                      <Text className="simulation-card-label">Beneficio Bruto</Text>
+                      <Text className="simulation-card-label">Gross Profit</Text>
                       <Text className="simulation-card-value simulation-card-value-positive">
                         <span className="simulation-card-arrow">↑</span>
                         {overallFarms
@@ -215,7 +215,7 @@ export default function SimulationPage() {
 
                     {/* Coste - ROJO + ↓ */}
                     <Box className="simulation-card">
-                      <Text className="simulation-card-label">Coste</Text>
+                      <Text className="simulation-card-label">Cost</Text>
                       <Text className="simulation-card-value simulation-card-value-negative">
                         <span className="simulation-card-arrow">↓</span>
                         {overallFarms ? overallFarms.coste.toLocaleString() : '-'}
@@ -224,7 +224,7 @@ export default function SimulationPage() {
 
                     {/* Beneficio neto - VERDE/ROJO + ↑/↓ según signo */}
                     <Box className="simulation-card">
-                      <Text className="simulation-card-label">Beneficio Neto</Text>
+                      <Text className="simulation-card-label">Net Profit</Text>
                       {overallFarms ? (
                         <Text className={farmsNetClass}>
                           <span className="simulation-card-arrow">
@@ -240,7 +240,7 @@ export default function SimulationPage() {
                     {/* Penalización acumulada - SIEMPRE ROJA + ↓ */}
                     <Box className="simulation-card">
                       <Text className="simulation-card-label">
-                        Penalización Acumulada
+                        Accumulated Penalty
                       </Text>
                       <Text className="simulation-card-value simulation-card-value-negative">
                         <span className="simulation-card-arrow">↓</span>
@@ -274,7 +274,7 @@ export default function SimulationPage() {
 
                     <Box className="simulation-card">
                       <Text className="simulation-card-label">
-                        Transportes semana 1
+                        Transports Week 1
                       </Text>
                       <Text className="simulation-card-value">
                         {overallTrips
@@ -285,7 +285,7 @@ export default function SimulationPage() {
 
                     <Box className="simulation-card">
                       <Text className="simulation-card-label">
-                        Transportes semana 2
+                        Transports Week 2
                       </Text>
                       <Text className="simulation-card-value">
                         {overallTrips
@@ -296,7 +296,7 @@ export default function SimulationPage() {
 
                     {/* Costes totales - ROJO + ↓ */}
                     <Box className="simulation-card">
-                      <Text className="simulation-card-label">Costes totales</Text>
+                      <Text className="simulation-card-label">Total Cost</Text>
                       <Text className="simulation-card-value simulation-card-value-negative">
                         <span className="simulation-card-arrow">↓</span>
                         {overallTrips
@@ -313,16 +313,16 @@ export default function SimulationPage() {
                         Trip ID
                       </Text>
                       <Text className="routes-table-cell routes-table-cell-header">
-                        Día
+                        Day
                       </Text>
                       <Text className="routes-table-cell routes-table-cell-header">
-                        Ruta
+                        Route
                       </Text>
                       <Text className="routes-table-cell routes-table-cell-header">
-                        Km totales
+                        Total Km
                       </Text>
                       <Text className="routes-table-cell routes-table-cell-header">
-                        Coste viaje
+                        Trip Cost
                       </Text>
                     </Box>
                     <Box className="routes-table-body">
@@ -360,7 +360,7 @@ export default function SimulationPage() {
                   <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={4}>
                     {/* Beneficio bruto - VERDE + ↑ (total) */}
                     <Box className="simulation-card">
-                      <Text className="simulation-card-label">Beneficio Bruto</Text>
+                      <Text className="simulation-card-label">Gross Profit</Text>
                       <Text className="simulation-card-value simulation-card-value-positive">
                         <span className="simulation-card-arrow">↑</span>
                         {overallSlaughterhouses
@@ -371,7 +371,7 @@ export default function SimulationPage() {
 
                     {/* Costes - ROJO + ↓ (total) */}
                     <Box className="simulation-card">
-                      <Text className="simulation-card-label">Costes</Text>
+                      <Text className="simulation-card-label">Cost</Text>
                       <Text className="simulation-card-value simulation-card-value-negative">
                         <span className="simulation-card-arrow">↓</span>
                         {overallSlaughterhouses
@@ -382,7 +382,7 @@ export default function SimulationPage() {
 
                     {/* Beneficio neto - VERDE/ROJO + ↑/↓ según signo (total) */}
                     <Box className="simulation-card">
-                      <Text className="simulation-card-label">Beneficio Neto</Text>
+                      <Text className="simulation-card-label">Net Profit</Text>
                       {overallSlaughterhouses ? (
                         <Text className={slaughterNetClass}>
                           <span className="simulation-card-arrow">
