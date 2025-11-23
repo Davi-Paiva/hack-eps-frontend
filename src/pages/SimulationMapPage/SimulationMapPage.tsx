@@ -1,4 +1,4 @@
-import { Box, Heading, Text, Select } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import './SimulationMapPage.css'
 import { useEffect, useState } from 'react'
 import { simulationService } from '../../services/simulationService'
@@ -6,6 +6,8 @@ import type { SimulationResponse } from '../../types/simulation'
 import { MapProvider, useMap } from '../../contexts/MapContext'
 import MapWithEntities from '../../components/MapWithEntities/MapWithEntities'
 import { drawSimulationRoutes, clearAllRoutes } from '../../utils/routeDrawer'
+import DaySelectorBox from '../../components/DaySelectorBox/DaySelectorBox'
+import TripsInfoBox from '../../components/TripsInfoBox/TripsInfoBox'
 
 function SimulationMapContent() {
   const { mapRef } = useMap()
@@ -75,39 +77,25 @@ function SimulationMapContent() {
     }
   }, [mapRef, routes, selectedDay])
 
+  const filteredRoutes = routes?.routes.filter(r => r.day === selectedDay) || []
+  const displayDay = availableDays[0] === 0 ? selectedDay + 1 : selectedDay
+
   return (
     <Box className="simulation-map-page">
       {mapRef.current && (
-        <Box className="simulation-header">
-          <Heading className="simulation-map-title">Day by Day Simulation</Heading>
-          <Text className="simulation-map-subtitle">
-            Visualize your supply chain simulation
-          </Text>
-          
-          {availableDays.length > 0 && (
-            <Box mt={4}>
-              <Text fontSize="sm" color="#a0a0a0" mb={2}>
-                Select Day
-              </Text>
-              <Select
-                value={selectedDay}
-                onChange={(e) => setSelectedDay(Number(e.target.value))}
-                className="day-selector"
-                size="sm"
-              >
-                {availableDays.map(dayValue => {
-                  const hasRoutes = routes?.routes.some(r => r.day === dayValue) || false
-                  const displayDay = availableDays[0] === 0 ? dayValue + 1 : dayValue
-                  return (
-                    <option key={dayValue} value={dayValue} disabled={!hasRoutes}>
-                      Day {displayDay} {!hasRoutes ? '(No trips)' : ''}
-                    </option>
-                  )
-                })}
-              </Select>
-            </Box>
-          )}
-        </Box>
+        <>
+          <DaySelectorBox 
+            selectedDay={selectedDay}
+            availableDays={availableDays}
+            routes={routes?.routes}
+            onDayChange={setSelectedDay}
+          />
+
+          <TripsInfoBox 
+            displayDay={displayDay}
+            trips={filteredRoutes}
+          />
+        </>
       )}
       <Box className="simulation-map-container">
         <MapWithEntities />
