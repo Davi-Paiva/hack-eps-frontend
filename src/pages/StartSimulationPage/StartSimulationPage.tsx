@@ -73,7 +73,7 @@ const StartSimulationPage: React.FC = () => {
             '0 10px 30px rgba(0,0,0,0.4)'
         }}
       >
-        {loading ? 'Lanzando simulación...' : 'Lanzar simulación'}
+        {loading ? 'Launching simulation...' : 'Launch Simulation'}
       </button>
     </div>
   )
