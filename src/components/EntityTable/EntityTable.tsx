@@ -27,15 +27,23 @@ type Props<T> = {
   tableMaxH?: string | number
   /** optional search query to filter displayed items */
   searchQuery?: string
+  /** optional key to trigger refetch when changed */
+  reloadKey?: any
   /** optional custom filter function (items, query) => filteredItems */
   filterFn?: (items: T[], query: string) => T[]
+  /** allow rows to be selectable by clicking */
+  rowSelectable?: boolean
+  /** callback when a row is selected */
+  onRowSelect?: (item: T | null) => void
 }
 
-function EntityTable<T>({ fetcher, columns, rowKey, tableMaxH = '420px', searchQuery, filterFn }: Props<T>) {
+function EntityTable<T>({ fetcher, columns, rowKey, tableMaxH = '420px', searchQuery, reloadKey, filterFn, rowSelectable = true, onRowSelect }: Props<T>) {
   const [items, setItems] = useState<T[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const evenBg = useColorModeValue('gray.50', 'gray.700')
   const hoverBg = useColorModeValue('gray.100', 'gray.600')
+  const selectedBg = useColorModeValue('blue.50', 'blue.900')
+  const [selectedKey, setSelectedKey] = useState<string | null>(null)
 
   useEffect(() => {
     let mounted = true
@@ -49,7 +57,7 @@ function EntityTable<T>({ fetcher, columns, rowKey, tableMaxH = '420px', searchQ
     return () => {
       mounted = false
     }
-  }, [fetcher])
+  }, [fetcher, reloadKey])
 
   const displayedItems = React.useMemo(() => {
     if (!searchQuery || searchQuery.trim() === '') return items
@@ -62,9 +70,19 @@ function EntityTable<T>({ fetcher, columns, rowKey, tableMaxH = '420px', searchQ
     }
   }, [items, searchQuery, filterFn])
 
+  const handleContainerClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement | null
+    if (!target) return
+    // if the click is not inside a table row, clear selection
+    if (!target.closest || !target.closest('tr')) {
+      setSelectedKey(null)
+      onRowSelect?.(null as any)
+    }
+  }
+
   return (
     <Box>
-      <TableContainer maxH={tableMaxH} overflowY="auto">
+      <TableContainer maxH={tableMaxH} overflowY="auto" onClick={handleContainerClick}>
         {loading ? (
           <Spinner />
         ) : items.length === 0 ? (
@@ -81,19 +99,33 @@ function EntityTable<T>({ fetcher, columns, rowKey, tableMaxH = '420px', searchQ
               </Tr>
             </Thead>
             <Tbody>
-              {displayedItems.map((it, idx) => (
-                <Tr
-                  key={rowKey ? rowKey(it) : String(idx)}
-                  bg={idx % 2 === 0 ? evenBg : undefined}
-                  _hover={{ bg: hoverBg }}
-                >
-                  {columns.map((c, ci) => (
-                    <Td key={ci} isNumeric={c.isNumeric} py={3} fontSize="md">
-                      {c.accessor(it)}
-                    </Td>
-                  ))}
-                </Tr>
-              ))}
+              {displayedItems.map((it, idx) => {
+                const key = rowKey ? rowKey(it) : String(idx)
+                const isSelected = key !== undefined && key === selectedKey
+                return (
+                  <Tr
+                    key={key}
+                    bg={isSelected ? selectedBg : idx % 2 === 0 ? evenBg : undefined}
+                    _hover={{ bg: hoverBg }}
+                      cursor={rowSelectable && rowKey ? 'pointer' : undefined}
+                      onClick={() => {
+                        if (rowSelectable && rowKey) {
+                          setSelectedKey((prev) => {
+                            const newKey = prev === key ? null : key
+                            onRowSelect?.(newKey === null ? null : it)
+                            return newKey
+                          })
+                        }
+                      }}
+                  >
+                    {columns.map((c, ci) => (
+                      <Td key={ci} isNumeric={c.isNumeric} py={3} fontSize="md">
+                        {c.accessor(it)}
+                      </Td>
+                    ))}
+                  </Tr>
+                )
+              })}
             </Tbody>
           </Table>
         )}

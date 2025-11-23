@@ -5,13 +5,17 @@ import EntityTable from '../EntityTable/EntityTable'
 
 type Props = {
   searchQuery?: string
+  onRowSelect?: (s: Slaughterhouse | null) => void
+  reloadKey?: any
 }
 
-const SlaughterhouseTable: React.FC<Props> = ({ searchQuery }) => {
+const SlaughterhouseTable: React.FC<Props> = ({ searchQuery, onRowSelect, reloadKey }) => {
   return (
     <EntityTable<Slaughterhouse>
       fetcher={slaughterhouseService.getAll}
       searchQuery={searchQuery}
+      reloadKey={reloadKey}
+      onRowSelect={onRowSelect}
       rowKey={(s: Slaughterhouse) => s._id ?? s.name}
       columns={[
         { header: 'Name', accessor: (s: Slaughterhouse) => s.name },
