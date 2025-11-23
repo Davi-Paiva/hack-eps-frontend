@@ -12,9 +12,6 @@ import {
 import { useNavigate } from 'react-router-dom'
 import './SimulationPage.css'
 
-// ===== Tipos que reflejan EXACTAMENTE los JSON de tus endpoints =====
-
-// /api/simulation/overall-farmls/latest
 type OverallFarmsResponse = {
   simulation_id: string
   timestamp: string
@@ -29,7 +26,6 @@ type OverallFarms = {
   perdidas_por_penalizacion: number
 }
 
-// /api/simulation/overall-trips/latest
 type OverallTripsResponse = {
   simulation_id: string
   timestamp: string
@@ -49,7 +45,6 @@ type TrucksInfo = {
   total: number
 }
 
-// /api/simulation/overall-slaughterhouses/latest
 type OverallSlaughterhousesResponse = {
   simulation_id: string
   timestamp: string
@@ -72,7 +67,7 @@ type OverallSlaughterhouses = {
   total_beneficio_neto: number
 }
 
-// /api/simulation/get-routes
+
 type RoutesResponse = {
   total_routes: number
   routes: Route[]
@@ -87,7 +82,6 @@ type Route = {
   day: number
   total_pigs: number
   distance_km: number
-  // Si en el futuro añades coste en el backend:
   costo_viaje?: number
 }
 

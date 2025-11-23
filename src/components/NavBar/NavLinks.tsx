@@ -22,7 +22,7 @@ export default function NavLinks(){
         </Button>
       </Link>
 
-      <Link to="/simulation">
+      <Link to="/start-simulation">
         <Button variant="ghost" size="md" className="navbar-button">
           Simulation
         </Button>

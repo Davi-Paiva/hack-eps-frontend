@@ -6,6 +6,7 @@ import FarmsPage from './pages/FarmsPage/FarmsPage'
 import SlaughterhousesPage from './pages/SlaughterhousesPage/SlaughterhousesPage'
 import SimulationPage from './pages/SimulationPage/SimulationPage'
 import SimulationMapPage from './pages/SimulationMapPage/SimulationMapPage'
+import StartSimulationPage from "./pages/StartSimulationPage/StartSimulationPage";
 
 function App() {
   
@@ -20,6 +21,7 @@ function App() {
             <Route path="/map" element={<MapPage/>} />
             <Route path="/farms" element={<FarmsPage/>} />
             <Route path="/slaughterhouses" element={<SlaughterhousesPage/>} />
+            <Route path="/start-simulation" element={<StartSimulationPage/>} />
             <Route path="/simulation" element={<SimulationPage/>} />
             <Route path="/simulation-map" element={<SimulationMapPage/>} />
           </Routes>
