@@ -14,8 +14,12 @@ export function getEntityByLayerId(layerId: string): MapEntity | undefined {
   return entityRegistry.get(layerId)
 }
 
-export function onEntityClick(callback: (entity: MapEntity, position: { x: number; y: number }) => void): void {
+export function onEntityClick(callback: (entity: MapEntity, position: { x: number; y: number }) => void): () => void {
   clickCallbacks.push(callback)
+  
+  return () => {
+    clickCallbacks = clickCallbacks.filter(cb => cb !== callback)
+  }
 }
 
 export function triggerEntityClick(layerId: string, clickX: number, clickY: number): void {
