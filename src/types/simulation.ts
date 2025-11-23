@@ -25,6 +25,7 @@ export interface Trip {
   purchase_cost: number
   revenue: number
   profit: number
+  carbon_footprint?: number
 }
 
 export interface SimulationResponse {

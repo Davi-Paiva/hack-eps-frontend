@@ -37,6 +37,7 @@ type OverallTrips = {
   total_viajes: number
   total_camiones: TrucksInfo
   coste_total: number
+  carbon_footprint_total_kg: number
 }
 
 type TrucksInfo = {
@@ -96,6 +97,7 @@ type ApiRoute = {
   purchase_cost: number
   revenue: number
   profit: number
+  carbon_footprint: number
 }
 
 /** ====== TIPO APLANADO PARA LA UI (tu tabla actual) ====== */
@@ -112,6 +114,8 @@ type Route = {
   purchase_cost?: number
   revenue?: number
   profit?: number
+  carbon_footprint: number
+  total_carbon_footprint?: number
 }
 
 export default function SimulationPage() {
@@ -151,6 +155,8 @@ export default function SimulationPage() {
           await slaughterRes.json()
         const routesData: RoutesResponse = await routesRes.json()
 
+      
+
         setOverallFarms(farmsData.overall_farms)
         setOverallTrips(tripsData.overall_trips)
         setOverallSlaughterhouses(slaughterData.overall_slaughterhouses)
@@ -169,7 +175,10 @@ export default function SimulationPage() {
           purchase_cost: r.purchase_cost,
           revenue: r.revenue,
           profit: r.profit,
+          carbon_footprint: r.carbon_footprint,
         }))
+
+     
 
         setRoutes(normalizedRoutes)
       } catch (err: any) {
@@ -198,6 +207,11 @@ export default function SimulationPage() {
     slaughterNetIsPositive ? 'simulation-card-value-positive' : 'simulation-card-value-negative'
   }`
   const slaughterNetArrow = slaughterNetIsPositive ? '↑' : '↓'
+
+  // Calculate total carbon footprint from all routes
+  const totalCarbonFootprint = routes.reduce((sum, route) => {
+    return sum + (route.carbon_footprint ?? 0)
+  }, 0)
 
   // Helper para construir la ruta en texto
   const buildRoutePath = (route: Route): string => {
@@ -297,7 +311,7 @@ export default function SimulationPage() {
                   >
                     Trips
                   </Heading>
-                  <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={4}>
+                  <SimpleGrid columns={{ base: 1, sm: 2, md: 5 }} spacing={4}>
                     <Box className="simulation-card">
                       <Text className="simulation-card-label">Viajes realizados</Text>
                       <Text className="simulation-card-value">
@@ -339,6 +353,15 @@ export default function SimulationPage() {
                           : '-'}
                       </Text>
                     </Box>
+
+                    {/* Carbon Footprint - ROJO + ↓ */}
+                    <Box className="simulation-card">
+                      <Text className="simulation-card-label">Carbon Footprint (kg CO₂)</Text>
+                      <Text className="simulation-card-value simulation-card-value-negative">
+                        <span className="simulation-card-arrow">↓</span>
+                        {overallTrips ? overallTrips.carbon_footprint_total_kg.toLocaleString() : '-'}
+                      </Text>
+                    </Box>
                   </SimpleGrid>
 
                   {/* Tabla de rutas scrolleable */}
@@ -376,6 +399,7 @@ export default function SimulationPage() {
                               ? route.costo_viaje.toLocaleString()
                               : '-'}
                           </Text>
+                        
                         </Box>
                       ))}
                     </Box>
