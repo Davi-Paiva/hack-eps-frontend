@@ -1,9 +1,54 @@
 import type { Map } from 'mapbox-gl'
 import type { Trip } from '../types/simulation'
-import { farmService } from '../services/farmService'
-import { slaughterhouseService } from '../services/slaughterhouseService'
 
 const activeRouteIds = new Set<string>()
+const MAPBOX_ACCESS_TOKEN = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || ''
+
+async function getDirectionsRoute(waypoints: [number, number][]): Promise<[number, number][] | null> {
+  if (waypoints.length < 2) return null
+  
+  const MAX_WAYPOINTS = 25
+  
+  if (waypoints.length <= MAX_WAYPOINTS) {
+    const coordinatesString = waypoints.map(coord => `${coord[0]},${coord[1]}`).join(';')
+    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinatesString}?geometries=geojson&access_token=${MAPBOX_ACCESS_TOKEN}`
+    
+    try {
+      const response = await fetch(url)
+      if (!response.ok) return null
+      
+      const data = await response.json()
+      if (data.routes && data.routes.length > 0) {
+        return data.routes[0].geometry.coordinates
+      }
+      return null
+    } catch (error) {
+      console.error('Error fetching directions:', error)
+      return null
+    }
+  } else {
+    const allCoordinates: [number, number][] = []
+    
+    for (let i = 0; i < waypoints.length - 1; i += MAX_WAYPOINTS - 1) {
+      const chunk = waypoints.slice(i, Math.min(i + MAX_WAYPOINTS, waypoints.length))
+      
+      if (i + MAX_WAYPOINTS < waypoints.length) {
+        chunk.push(waypoints[i + MAX_WAYPOINTS])
+      }
+      
+      const segmentCoords = await getDirectionsRoute(chunk)
+      if (!segmentCoords) return null
+      
+      if (allCoordinates.length > 0) {
+        segmentCoords.shift()
+      }
+      
+      allCoordinates.push(...segmentCoords)
+    }
+    
+    return allCoordinates
+  }
+}
 
 export async function drawSimulationRoutes(map: Map, routes: Trip[]): Promise<void> {
   clearAllRoutes(map)
@@ -22,32 +67,27 @@ export async function drawSimulationRoutes(map: Map, routes: Trip[]): Promise<vo
 async function drawSingleRoute(map: Map, route: Trip): Promise<boolean> {
   const routeId = `route-${route.trip_id}`
   
-  const slaughterhouse = await slaughterhouseService.getById(route.slaughterhouse_id)
-  if (!slaughterhouse) return false
+  if (!route.slaughterhouse?.lat || !route.slaughterhouse?.lon) return false
+  if (!route.farms || route.farms.length === 0) return false
   
-  const farmPromises = route.farm_ids.map(id => farmService.getById(id))
-  const farms = await Promise.all(farmPromises)
-  const validFarms = farms.filter(farm => farm !== null)
+  const waypoints: [number, number][] = []
   
-  if (validFarms.length === 0) return false
+  waypoints.push([route.slaughterhouse.lon, route.slaughterhouse.lat])
   
-  const coordinates: [number, number][] = []
-  
-  coordinates.push([slaughterhouse.lon, slaughterhouse.lat])
-  
-  for (const farm of validFarms) {
-    if (farm) {
-      coordinates.push([farm.lon, farm.lat])
-    }
+  for (const farm of route.farms) {
+    waypoints.push([farm.lon, farm.lat])
   }
   
-  coordinates.push([slaughterhouse.lon, slaughterhouse.lat])
+  waypoints.push([route.slaughterhouse.lon, route.slaughterhouse.lat])
   
-  const invalidCoords = coordinates.filter(([lon, lat]) => 
+  const invalidCoords = waypoints.filter(([lon, lat]) => 
     !isFinite(lon) || !isFinite(lat) || Math.abs(lon) > 180 || Math.abs(lat) > 90
   )
   
   if (invalidCoords.length > 0) return false
+  
+  const roadCoordinates = await getDirectionsRoute(waypoints)
+  if (!roadCoordinates) return false
   
   if (map.getLayer(routeId)) {
     map.removeLayer(routeId)
@@ -65,17 +105,21 @@ async function drawSingleRoute(map: Map, route: Trip): Promise<boolean> {
         day: route.day,
         total_pigs: route.total_pigs,
         distance_km: route.distance_km,
-        slaughterhouse_name: route.slaughterhouse_name,
-        farm_count: validFarms.length
+        cost: route.cost,
+        profit: route.profit,
+        slaughterhouse_name: route.slaughterhouse.name,
+        farm_count: route.farms.length
       },
       geometry: {
         type: 'LineString',
-        coordinates: coordinates
+        coordinates: roadCoordinates
       }
     }
   })
   
   const color = getColorForDay(route.day)
+  
+  const firstSymbolLayer = map.getStyle().layers.find(layer => layer.type === 'symbol')
   
   map.addLayer({
     id: routeId,
@@ -90,7 +134,7 @@ async function drawSingleRoute(map: Map, route: Trip): Promise<boolean> {
       'line-width': 3,
       'line-opacity': 0.7
     }
-  })
+  }, firstSymbolLayer?.id)
   
   activeRouteIds.add(routeId)
   return true
