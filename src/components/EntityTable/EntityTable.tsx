@@ -94,6 +94,7 @@ function EntityTable<T>({ fetcher, columns, rowKey, tableMaxH = '420px', searchQ
           <Table variant="unstyled" size="md">
             <Thead>
               <Tr>
+                <Th w="40px" borderBottom="none"></Th>
                 {columns.map((c) => (
                   <Th key={c.header} isNumeric={c.isNumeric} fontSize="md" py={3} borderBottom="none">
                     {c.header}
@@ -121,6 +122,24 @@ function EntityTable<T>({ fetcher, columns, rowKey, tableMaxH = '420px', searchQ
                         }
                       }}
                   >
+                    <Td w="40px" borderBottom="none">
+                      <Box
+                        w="16px"
+                        h="16px"
+                        borderRadius="50%"
+                        border="2px solid"
+                        borderColor={isSelected ? "blue.400" : "gray.500"}
+                        bg={isSelected ? "blue.400" : "transparent"}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        transition="all 0.2s"
+                      >
+                        {isSelected && (
+                          <Box w="6px" h="6px" borderRadius="50%" bg="white" />
+                        )}
+                      </Box>
+                    </Td>
                     {columns.map((c, ci) => (
                       <Td key={ci} isNumeric={c.isNumeric} py={3} fontSize="md" borderBottom="none">
                         {c.accessor(it)}

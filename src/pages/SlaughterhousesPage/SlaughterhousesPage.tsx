@@ -69,14 +69,18 @@ const SlaughterhousesPage: React.FC = () => {
               <Button 
                 leftIcon={<AddIcon />} 
                 size="md" 
-                className="btn-gradient-green"
+                bg="linear-gradient(to right, #fb923c, #f472b6)"
+                color="white"
+                _hover={{ bg: "linear-gradient(to right, #ff6b4a, #dd2a7b)", transform: "translateY(-2px)", boxShadow: "0 10px 20px rgba(251, 146, 60, 0.3)" }}
                 onClick={() => setIsAddOpen(true)}
               >
                 Add Slaughterhouse
               </Button>
               <Button
                 size="md"
-                className="btn-gradient-blue"
+                bg="linear-gradient(to right, #fbbf24, #f59e0b)"
+                color="white"
+                _hover={{ bg: "linear-gradient(to right, #f59e0b, #d97706)", transform: "translateY(-2px)", boxShadow: "0 10px 20px rgba(251, 191, 36, 0.3)" }}
                 onClick={() => setIsEditOpen(true)}
                 isDisabled={!selectedSlaughterhouse}
               >
@@ -84,7 +88,9 @@ const SlaughterhousesPage: React.FC = () => {
               </Button>
               <Button
                 size="md"
-                className="btn-gradient-red"
+                bg="linear-gradient(to right, #ef4444, #dc2626)"
+                color="white"
+                _hover={{ bg: "linear-gradient(to right, #dc2626, #b91c1c)", transform: "translateY(-2px)", boxShadow: "0 10px 20px rgba(239, 68, 68, 0.3)" }}
                 onClick={handleDelete}
                 isDisabled={!selectedSlaughterhouse}
               >
