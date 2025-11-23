@@ -19,13 +19,29 @@ export function FormField({
 }: FormFieldProps) {
   return (
     <FormControl isRequired={isRequired}>
-      <FormLabel>{label}</FormLabel>
+      <FormLabel color="gray.300">{label}</FormLabel>
       {isNumber ? (
         <NumberInput value={value} onChange={onChange}>
-          <NumberInputField placeholder={placeholder} />
+          <NumberInputField 
+            placeholder={placeholder} 
+            bg="gray.800" 
+            color="white" 
+            borderColor="gray.600"
+            _hover={{ borderColor: "gray.500" }}
+            _focus={{ borderColor: "orange.400", boxShadow: "0 0 0 1px #fb923c" }}
+          />
         </NumberInput>
       ) : (
-        <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />
+        <Input 
+          value={value} 
+          onChange={(e) => onChange(e.target.value)} 
+          placeholder={placeholder}
+          bg="gray.800" 
+          color="white" 
+          borderColor="gray.600"
+          _hover={{ borderColor: "gray.500" }}
+          _focus={{ borderColor: "orange.400", boxShadow: "0 0 0 1px #fb923c" }}
+        />
       )}
     </FormControl>
   )

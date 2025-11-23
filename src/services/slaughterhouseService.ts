@@ -79,5 +79,21 @@ export const slaughterhouseService = {
       console.error('Error deleting slaughterhouse:', error)
       return false
     }
+  },
+
+  async importCSV(file: File): Promise<boolean> {
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      
+      const response = await fetch(`${endpoint}/import-csv`, {
+        method: 'POST',
+        body: formData,
+      })
+      return response.ok
+    } catch (error) {
+      console.error('Error importing CSV:', error)
+      return false
+    }
   }
 }
