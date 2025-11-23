@@ -1,19 +1,31 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import './HomePage.css';
 
-// Content Block Component
-const ContentBlock: React.FC<{
+// ============= COMPONENT: ContentBlock =============
+
+interface ContentBlockProps {
   title: string;
   subtitle?: string;
   children: React.ReactNode;
-  bgColor?: string;
-}> = ({ title, subtitle, children, bgColor = "bg-slate-900/40" }) => {
+  bgColor?: "dark" | "light";
+}
+
+const ContentBlock: React.FC<ContentBlockProps> = ({
+  title,
+  subtitle,
+  children,
+  bgColor = "light",
+}) => {
+  const bgClass = bgColor === "dark" ? "bg-dark" : "bg-light";
+
   return (
-    <section className={`border-t border-slate-800 ${bgColor}`}>
-      <div className="max-w-6xl mx-auto px-6 py-16">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-3 text-orange-400">{title}</h2>
+    <section className={`home-content-block ${bgClass}`}>
+      <div className="home-content-inner">
+        <div className="home-content-header">
+          <h2 className="home-section-title">{title}</h2>
           {subtitle && (
-            <p className="text-slate-400 text-lg max-w-3xl">{subtitle}</p>
+            <p className="home-section-subtitle">{subtitle}</p>
           )}
         </div>
         {children}
@@ -22,94 +34,138 @@ const ContentBlock: React.FC<{
   );
 };
 
-// Feature Card Component
-const FeatureCard: React.FC<{
+// ============= COMPONENT: FeatureCard =============
+
+interface FeatureCardProps {
   icon: string;
   title: string;
   description: string;
-}> = ({ icon, title, description }) => {
+}
+
+const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description }) => {
   return (
-    <div className="rounded-2xl bg-slate-900/70 border border-slate-700 p-6 hover:border-orange-500/50 transition-all duration-300">
-      <div className="text-3xl mb-3">{icon}</div>
-      <h3 className="text-lg font-semibold mb-3 text-slate-100">{title}</h3>
-      <p className="text-slate-300 leading-relaxed">{description}</p>
+    <div className="home-feature-card">
+      <div className="home-feature-icon">{icon}</div>
+      <h3 className="home-feature-title">{title}</h3>
+      <p className="home-feature-description">{description}</p>
     </div>
   );
 };
 
-const HomePage: React.FC = () => {
+// ============= COMPONENT: LayerCard =============
+
+interface LayerCardProps {
+  label: string;
+  title: string;
+  items: string[];
+}
+
+const LayerCard: React.FC<LayerCardProps> = ({ label, title, items }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-50 overflow-y-auto">
-      {/* Hero Section */}
-      <header className="max-w-6xl mx-auto px-6 pt-16 pb-20">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-          <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-orange-500/40 bg-orange-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-orange-300">
+    <div className="home-layer-card">
+      <p className="home-layer-label">{label}</p>
+      <h3 className="home-layer-title">{title}</h3>
+      <ul className="home-layer-list">
+        {items.map((item, idx) => (
+          <li key={idx} className="home-layer-item">
+            <span className="home-layer-bullet">•</span>
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+// ============= COMPONENT: BenefitCard =============
+
+interface BenefitCardProps {
+  icon: string;
+  title: string;
+  items: string[];
+}
+
+const BenefitCard: React.FC<BenefitCardProps> = ({ icon, title, items }) => {
+  return (
+    <div className="home-benefit-card">
+      <div className="home-benefit-icon">{icon}</div>
+      <h3 className="home-benefit-title">{title}</h3>
+      <ul className="home-benefit-list">
+        {items.map((item, idx) => (
+          <li key={idx} className="home-benefit-item">
+            <span className="home-benefit-checkmark">✓</span>
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+// ============= COMPONENT: HomePage =============
+
+const HomePage: React.FC = () => {
+  const navigate = useNavigate();
+  return (
+    <div className="home-page">
+      {/* ============= HERO SECTION ============= */}
+      <header className="home-hero">
+        <div className="home-hero-container">
+          <div className="home-hero-content">
+            <span className="home-badge">
               🐷🚛 Logistics Optimization · HackEPS
             </span>
 
-            <h1 className="mt-6 text-5xl font-bold leading-tight lg:text-6xl">
+            <h1 className="home-title">
               Intelligent{" "}
-              <span className="text-orange-400">Logistics Simulator</span> for
+              <span className="home-title-highlight">Logistics Simulator</span> for
               Farms & Slaughterhouses
             </h1>
 
-            <p className="mt-6 text-lg text-slate-300 leading-relaxed">
+            <p className="home-subtitle">
               Evaluate routes, purchases, and profits in a simulated 2-week
               environment. Our system combines pig weights, prices, penalties,
               distances, and daily slaughter capacity to recommend optimal
               logistics decisions.
             </p>
-
-            <div className="mt-8 flex flex-wrap gap-4">
-              <button className="rounded-xl bg-orange-500 px-6 py-4 text-base font-semibold text-slate-950 shadow-lg shadow-orange-500/30 hover:bg-orange-400 transition-all duration-300 hover:scale-105">
-                Start Simulation
-              </button>
-              <button className="rounded-xl border border-slate-600 px-6 py-4 text-base font-semibold text-slate-100 hover:bg-slate-800/60 transition-all duration-300">
-                View Example Results
-              </button>
-            </div>
           </div>
 
           {/* Stats Card */}
-          <div className="mt-8 lg:mt-0 lg:max-w-md">
-            <div className="rounded-2xl border border-slate-700 bg-slate-900/70 p-6 shadow-2xl">
-              <p className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-4">
-                Simulation Summary
-              </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-xl bg-slate-800/80 p-4">
-                  <p className="text-slate-400 text-xs">Net Profit</p>
-                  <p className="mt-2 text-2xl font-bold text-emerald-300">
-                    €124.3K
-                  </p>
-                </div>
-                <div className="rounded-xl bg-slate-800/80 p-4">
-                  <p className="text-slate-400 text-xs">CO₂ per kg</p>
-                  <p className="mt-2 text-2xl font-bold text-sky-300">
-                    0.42 kg
-                  </p>
-                </div>
-                <div className="rounded-xl bg-slate-800/80 p-4">
-                  <p className="text-slate-400 text-xs">Truck Usage</p>
-                  <p className="mt-2 text-2xl font-bold text-orange-300">87%</p>
-                </div>
-                <div className="rounded-xl bg-slate-800/80 p-4">
-                  <p className="text-slate-400 text-xs">Farms Served</p>
-                  <p className="mt-2 text-2xl font-bold text-violet-300">32</p>
-                </div>
+          <div className="home-stats-card">
+            <p className="home-stats-label">Simulation Summary</p>
+            <div className="home-stats-grid">
+              <div className="home-stat-item">
+                <p className="home-stat-label">Net Profit</p>
+                <p className="home-stat-value home-stat-value-green">
+                  €124.3K
+                </p>
+              </div>
+              <div className="home-stat-item">
+                <p className="home-stat-label">CO₂ per kg</p>
+                <p className="home-stat-value home-stat-value-blue">
+                  0.42 kg
+                </p>
+              </div>
+              <div className="home-stat-item">
+                <p className="home-stat-label">Truck Usage</p>
+                <p className="home-stat-value home-stat-value-orange">87%</p>
+              </div>
+              <div className="home-stat-item">
+                <p className="home-stat-label">Farms Served</p>
+                <p className="home-stat-value home-stat-value-purple">32</p>
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* What is this platform */}
+      {/* ============= WHAT IS THIS PLATFORM ============= */}
       <ContentBlock
         title="What is this Platform?"
         subtitle="A logistics simulation tool designed for the pork supply chain: farms, slaughterhouses, and transporters."
+        bgColor="light"
       >
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="home-features-grid">
           <FeatureCard
             icon="🐷"
             title="Farm Production"
@@ -128,224 +184,112 @@ const HomePage: React.FC = () => {
         </div>
       </ContentBlock>
 
-      {/* How it Works */}
+      {/* ============= HOW IT WORKS ============= */}
       <ContentBlock
         title="How Does it Work?"
         subtitle="The simulation engine evaluates all possible farm-slaughterhouse combinations day by day, building routes that maximize profit."
-        bgColor="bg-slate-950/40"
+        bgColor="dark"
       >
-        <div className="grid gap-6 lg:grid-cols-3">
-          {/* Layer 1 */}
-          <div className="rounded-2xl bg-slate-950/70 border border-slate-700 p-6 hover:border-orange-500/30 transition-all duration-300">
-            <p className="text-xs font-bold uppercase tracking-wide text-orange-400 mb-2">
-              Layer 1
-            </p>
-            <h3 className="text-xl font-bold mb-4 text-slate-100">
-              Trip Economics
-            </h3>
-            <ul className="space-y-3 text-slate-300">
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400 mt-1">•</span>
-                <span>Calculate available pigs and remaining inventory</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400 mt-1">•</span>
-                <span>
-                  Analyze weight distribution and apply penalties per range
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400 mt-1">•</span>
-                <span>Estimate revenue: kg × sale price × (1 − penalty)</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400 mt-1">•</span>
-                <span>Calculate transport costs: km × cost/km</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400 mt-1">•</span>
-                <span>Compute trip profit: revenue − purchases − transport</span>
-              </li>
-            </ul>
-          </div>
+        <div className="home-layers-grid">
+          <LayerCard
+            label="Layer 1"
+            title="Trip Economics"
+            items={[
+              "Calculate available pigs and remaining inventory",
+              "Analyze weight distribution and apply penalties per range",
+              "Estimate revenue: kg × sale price × (1 − penalty)",
+              "Calculate transport costs: km × cost/km",
+              "Compute trip profit: revenue − purchases − transport"
+            ]}
+          />
 
-          {/* Layer 2 */}
-          <div className="rounded-2xl bg-slate-950/70 border border-slate-700 p-6 hover:border-orange-500/30 transition-all duration-300">
-            <p className="text-xs font-bold uppercase tracking-wide text-orange-400 mb-2">
-              Layer 2
-            </p>
-            <h3 className="text-xl font-bold mb-4 text-slate-100">
-              Timing & Scoring
-            </h3>
-            <ul className="space-y-3 text-slate-300">
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400 mt-1">•</span>
-                <span>
-                  Calculate timing score based on daily growth and days to
-                  optimal weight (105-115 kg)
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400 mt-1">•</span>
-                <span>Filter out farms with negative profit or poor timing</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400 mt-1">•</span>
-                <span>
-                  Compute global score combining distance, timing, profit per
-                  kg, and urgency
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400 mt-1">•</span>
-                <span>Rank farms by global score (highest to lowest)</span>
-              </li>
-            </ul>
-          </div>
+          <LayerCard
+            label="Layer 2"
+            title="Timing & Scoring"
+            items={[
+              "Calculate timing score based on daily growth and days to optimal weight (105-115 kg)",
+              "Filter out farms with negative profit or poor timing",
+              "Compute global score combining distance, timing, profit per kg, and urgency",
+              "Rank farms by global score (highest to lowest)"
+            ]}
+          />
 
-          {/* Layer 3 */}
-          <div className="rounded-2xl bg-slate-950/70 border border-slate-700 p-6 hover:border-orange-500/30 transition-all duration-300">
-            <p className="text-xs font-bold uppercase tracking-wide text-orange-400 mb-2">
-              Layer 3
-            </p>
-            <h3 className="text-xl font-bold mb-4 text-slate-100">
-              Route Building
-            </h3>
-            <ul className="space-y-3 text-slate-300">
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400 mt-1">•</span>
-                <span>
-                  Build routes with up to 3 farms per truck respecting daily
-                  slaughter capacity
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400 mt-1">•</span>
-                <span>Select truck type (10T or 20T) based on total load</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400 mt-1">•</span>
-                <span>
-                  Update metrics per trip: revenue, purchases, transport costs
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400 mt-1">•</span>
-                <span>
-                  Aggregate final results: gross/net profit, truck occupancy,
-                  total km, and other KPIs
-                </span>
-              </li>
-            </ul>
-          </div>
+          <LayerCard
+            label="Layer 3"
+            title="Route Building"
+            items={[
+              "Build routes with up to 3 farms per truck respecting daily slaughter capacity",
+              "Select truck type (10T or 20T) based on total load",
+              "Update metrics per trip: revenue, purchases, transport costs",
+              "Aggregate final results: gross/net profit, truck occupancy, total km, and other KPIs"
+            ]}
+          />
         </div>
       </ContentBlock>
 
-      {/* Benefits */}
+      {/* ============= BENEFITS ============= */}
       <ContentBlock
         title="Key Benefits"
         subtitle="Concrete advantages for each stakeholder in the supply chain."
-        bgColor="bg-slate-900/40"
+        bgColor="light"
       >
-        <div className="grid gap-6 md:grid-cols-3">
-          {/* Slaughterhouse */}
-          <div className="rounded-2xl bg-slate-900/70 border border-slate-700 p-6 hover:border-orange-500/50 transition-all duration-300">
-            <div className="text-3xl mb-4">🏭</div>
-            <h3 className="text-xl font-semibold mb-4 text-slate-100">
-              For Slaughterhouses
-            </h3>
-            <ul className="space-y-3 text-slate-300">
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400">✓</span>
-                <span>Maximize profit per kg and per day</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400">✓</span>
-                <span>Avoid capacity saturation with advance planning</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400">✓</span>
-                <span>Reduce weight penalties by optimal purchase timing</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400">✓</span>
-                <span>Simulate "what if" scenarios</span>
-              </li>
-            </ul>
-          </div>
+        <div className="home-benefits-grid">
+          <BenefitCard
+            icon="🏭"
+            title="For Slaughterhouses"
+            items={[
+              "Maximize profit per kg and per day",
+              "Avoid capacity saturation with advance planning",
+              "Reduce weight penalties by optimal purchase timing",
+              "Simulate \"what if\" scenarios"
+            ]}
+          />
 
-          {/* Farms */}
-          <div className="rounded-2xl bg-slate-900/70 border border-slate-700 p-6 hover:border-orange-500/50 transition-all duration-300">
-            <div className="text-3xl mb-4">🐷</div>
-            <h3 className="text-xl font-semibold mb-4 text-slate-100">
-              For Farms
-            </h3>
-            <ul className="space-y-3 text-slate-300">
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400">✓</span>
-                <span>Visibility on pickup probability based on weight</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400">✓</span>
-                <span>Understand economic impact of average weight</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400">✓</span>
-                <span>Better feeding and batch planning decisions</span>
-              </li>
-            </ul>
-          </div>
+          <BenefitCard
+            icon="🐷"
+            title="For Farms"
+            items={[
+              "Visibility on pickup probability based on weight",
+              "Understand economic impact of average weight",
+              "Better feeding and batch planning decisions"
+            ]}
+          />
 
-          {/* Transporters */}
-          <div className="rounded-2xl bg-slate-900/70 border border-slate-700 p-6 hover:border-orange-500/50 transition-all duration-300">
-            <div className="text-3xl mb-4">🚛</div>
-            <h3 className="text-xl font-semibold mb-4 text-slate-100">
-              For Transporters
-            </h3>
-            <ul className="space-y-3 text-slate-300">
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400">✓</span>
-                <span>Fuller routes with fewer empty kilometers</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400">✓</span>
-                <span>Better truck utilization (average occupancy)</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400">✓</span>
-                <span>Cost estimation per km and carbon footprint analysis</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-orange-400">✓</span>
-                <span>Clear map visualization of daily farm visits</span>
-              </li>
-            </ul>
-          </div>
+          <BenefitCard
+            icon="🚛"
+            title="For Transporters"
+            items={[
+              "Fuller routes with fewer empty kilometers",
+              "Better truck utilization (average occupancy)",
+              "Cost estimation per km and carbon footprint analysis",
+              "Clear map visualization of daily farm visits"
+            ]}
+          />
         </div>
 
-        {/* CTA Section */}
-        <div className="mt-12 rounded-2xl bg-gradient-to-r from-orange-500/10 to-orange-600/10 border border-orange-500/30 p-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            <div>
-              <h3 className="text-2xl font-bold mb-3 text-slate-100">
+        {/* ============= CTA SECTION ============= */}
+        <div className="home-cta-section">
+          <div className="home-cta-content">
+            <div className="home-cta-text-wrapper">
+              <h3 className="home-cta-title">
                 Ready to Optimize Your Supply Chain?
               </h3>
-              <p className="text-slate-300 max-w-2xl leading-relaxed">
+              <p className="home-cta-description">
                 Transform operational data (weights, distances, capacities) into
                 clear economic decisions: what to buy, when, where, and how to
                 transport it to maximize system-wide profit.
               </p>
             </div>
-            <button className="rounded-xl bg-orange-500 px-8 py-4 text-base font-semibold text-slate-950 shadow-lg shadow-orange-500/30 hover:bg-orange-400 transition-all duration-300 hover:scale-105 whitespace-nowrap">
+            <button className="home-btn-cta" onClick={() => navigate('/start-simulation')}>
               Try Example Simulation
             </button>
           </div>
         </div>
       </ContentBlock>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-800 py-8 text-center">
-        <p className="text-sm text-slate-500">
+      {/* ============= FOOTER ============= */}
+      <footer className="home-footer">
+        <p className="home-footer-text">
           HackEPS · Pork Logistics Simulator · Demo
         </p>
       </footer>
