@@ -59,4 +59,19 @@ export const slaughterhouseService = {
       return false
     }
   }
+
+  ,
+
+  async delete(id: string): Promise<boolean> {
+    try {
+      const url = `${endpoint}/delete?slaughterhouse_id=${encodeURIComponent(id)}`
+      const response = await fetch(url, {
+        method: 'DELETE',
+      })
+      return response.ok
+    } catch (error) {
+      console.error('Error deleting slaughterhouse:', error)
+      return false
+    }
+  }
 }

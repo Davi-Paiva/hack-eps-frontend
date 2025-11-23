@@ -4,6 +4,8 @@ import SlaughterhouseTable from '../../components/SlaughterhouseTable/Slaughterh
 import BoxCard from '../../components/BoxCard/BoxCard'
 import SearchInput from '../../components/SearchInput/SearchInput'
 import EditButton from '../../components/EditButton/EditButton'
+import DeleteButton from '../../components/DeleteButton/DeleteButton'
+import { slaughterhouseService } from '../../services/slaughterhouseService'
 import SlaughterhouseEditModal from '../../components/SlaughterhouseEditModal/SlaughterhouseEditModal'
 import SlaughterhouseAddModal from '../../components/SlaughterhouseAddModal/SlaughterhouseAddModal'
 import { Button } from '@chakra-ui/react'
@@ -16,6 +18,27 @@ const SlaughterhousesPage: React.FC = () => {
   const [isEditOpen, setIsEditOpen] = React.useState(false)
   const [isAddOpen, setIsAddOpen] = React.useState(false)
   const [reloadKey, setReloadKey] = React.useState(0)
+
+  const handleDelete = async () => {
+    if (!selectedSlaughterhouse) return
+    // prefer domain-specific id if present, otherwise use MongoDB _id
+    const idToUse = (selectedSlaughterhouse as any).slaughterhouse_id ?? selectedSlaughterhouse._id
+    if (!idToUse) return
+    const ok = window.confirm(`Delete slaughterhouse "${selectedSlaughterhouse.name}"?`)
+    if (!ok) return
+    try {
+      const success = await slaughterhouseService.delete(String(idToUse))
+      if (success) {
+        setReloadKey((r) => r + 1)
+        setSelectedSlaughterhouse(null)
+      } else {
+        window.alert('Failed to delete slaughterhouse')
+      }
+    } catch (err) {
+      console.error(err)
+      window.alert('Error deleting slaughterhouse')
+    }
+  }
 
   return (
     <Box p={6}>
@@ -36,6 +59,13 @@ const SlaughterhousesPage: React.FC = () => {
                   Add Slaughterhouse
                 </Button>
                 <EditButton onClick={() => setIsEditOpen(true)} isDisabled={!selectedSlaughterhouse} />
+                <DeleteButton
+                  onClick={handleDelete}
+                  isDisabled={
+                    !selectedSlaughterhouse || !((selectedSlaughterhouse as any).slaughterhouse_id ?? selectedSlaughterhouse._id)
+                  }
+                  size="sm"
+                />
               </Box>
             </Flex>
           </Box>
