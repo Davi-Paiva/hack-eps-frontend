@@ -66,36 +66,38 @@ function SimulationMapContent() {
 
   return (
     <Box className="simulation-map-page">
-      <Box className="simulation-header">
-        <Heading className="simulation-map-title">Day by Day Simulation</Heading>
-        <Text className="simulation-map-subtitle">
-          Visualize your supply chain simulation
-        </Text>
-        
-        {availableDays.length > 0 && (
-          <Box mt={4}>
-            <Text fontSize="sm" color="#a0a0a0" mb={2}>
-              Select Day
-            </Text>
-            <Select
-              value={selectedDay}
-              onChange={(e) => setSelectedDay(Number(e.target.value))}
-              className="day-selector"
-              size="sm"
-            >
-              {availableDays.map(dayValue => {
-                const hasRoutes = routes?.routes.some(r => r.day === dayValue) || false
-                const displayDay = availableDays[0] === 0 ? dayValue + 1 : dayValue
-                return (
-                  <option key={dayValue} value={dayValue} disabled={!hasRoutes}>
-                    Day {displayDay} {!hasRoutes ? '(No trips)' : ''}
-                  </option>
-                )
-              })}
-            </Select>
-          </Box>
-        )}
-      </Box>
+      {mapRef.current && (
+        <Box className="simulation-header">
+          <Heading className="simulation-map-title">Day by Day Simulation</Heading>
+          <Text className="simulation-map-subtitle">
+            Visualize your supply chain simulation
+          </Text>
+          
+          {availableDays.length > 0 && (
+            <Box mt={4}>
+              <Text fontSize="sm" color="#a0a0a0" mb={2}>
+                Select Day
+              </Text>
+              <Select
+                value={selectedDay}
+                onChange={(e) => setSelectedDay(Number(e.target.value))}
+                className="day-selector"
+                size="sm"
+              >
+                {availableDays.map(dayValue => {
+                  const hasRoutes = routes?.routes.some(r => r.day === dayValue) || false
+                  const displayDay = availableDays[0] === 0 ? dayValue + 1 : dayValue
+                  return (
+                    <option key={dayValue} value={dayValue} disabled={!hasRoutes}>
+                      Day {displayDay} {!hasRoutes ? '(No trips)' : ''}
+                    </option>
+                  )
+                })}
+              </Select>
+            </Box>
+          )}
+        </Box>
+      )}
       <Box className="simulation-map-container">
         <MapWithEntities />
       </Box>
