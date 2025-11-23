@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
 import "./App.css";
+import HomePage from './pages/HomePage/HomePage'
 import MapPage from './pages/MapPage/MapPage'
 import FarmsPage from './pages/FarmsPage/FarmsPage'
 import SlaughterhousesPage from './pages/SlaughterhousesPage/SlaughterhousesPage'
@@ -16,7 +17,7 @@ function App() {
 
         <main className="main-content">
           <Routes>
-            <Route path="*" element={<div>Home Page</div>} />
+            <Route path="/" element={<HomePage/>} />
             <Route path="/map" element={<MapPage/>} />
             <Route path="/farms" element={<FarmsPage/>} />
             <Route path="/slaughterhouses" element={<SlaughterhousesPage/>} />
