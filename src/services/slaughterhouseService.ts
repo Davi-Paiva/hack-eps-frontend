@@ -5,7 +5,7 @@ const endpoint = "http://127.0.0.1:8000/api/slaughterhouses"
 export const slaughterhouseService = {
   async create(slaughterhouse: Slaughterhouse): Promise<boolean> {
     try {
-      const response = await fetch(endpoint, {
+      const response = await fetch(`${endpoint}/init-slaughterhouse`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(slaughterhouse),
@@ -42,6 +42,21 @@ export const slaughterhouseService = {
     } catch (error) {
       console.error('Error fetching slaughterhouse:', error)
       return null
+    }
+  }
+  ,
+
+  async update(id: string, slaughterhouse_data: Partial<Slaughterhouse>): Promise<boolean> {
+    try {
+      const response = await fetch(`${endpoint}/${id}/edit`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(slaughterhouse_data),
+      })
+      return response.ok
+    } catch (error) {
+      console.error('Error updating slaughterhouse:', error)
+      return false
     }
   }
 }

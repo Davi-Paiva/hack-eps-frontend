@@ -1,7 +1,17 @@
 import { Box, Container, Heading, Text } from '@chakra-ui/react'
 import './SimulationMapPage.css'
+import { use, useEffect } from 'react'
+import { simulationService } from '../../services/simulationService'
+import type { SimulationResponse } from '../../types/simulation'
 
 export default function SimulationMapPage() {
+  useEffect(() => {
+    const fetchRoutes = async () => {
+      const routes: SimulationResponse = await simulationService.getRoutes()
+      console.log('Fetched simulation routes:', routes)
+    }
+    fetchRoutes()
+  }, [])
   return (
     <Box className="simulation-map-page">
       <Container maxW="container.xl" py={8}>
