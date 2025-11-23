@@ -67,12 +67,38 @@ type OverallSlaughterhouses = {
   total_beneficio_neto: number
 }
 
-
+/** ====== NUEVO SCHEMA DEL BACKEND (/simulate/get-routes) ====== */
 type RoutesResponse = {
   total_routes: number
-  routes: Route[]
+  routes: ApiRoute[]
 }
 
+type ApiRoute = {
+  trip_id: number
+  slaughterhouse: {
+    id: string
+    name: string
+    lat: number
+    lon: number
+  }
+  farms: {
+    farm_id: string
+    farm_name: string
+    lat: number
+    lon: number
+    pigs: number
+    load_kg: number
+  }[]
+  day: number
+  total_pigs: number
+  distance_km: number
+  cost: number
+  purchase_cost: number
+  revenue: number
+  profit: number
+}
+
+/** ====== TIPO APLANADO PARA LA UI (tu tabla actual) ====== */
 type Route = {
   trip_id: number
   slaughterhouse_id: string
@@ -83,6 +109,9 @@ type Route = {
   total_pigs: number
   distance_km: number
   costo_viaje?: number
+  purchase_cost?: number
+  revenue?: number
+  profit?: number
 }
 
 export default function SimulationPage() {
@@ -108,6 +137,7 @@ export default function SimulationPage() {
           fetch('http://localhost:8000/api/simulation/overall-farms/latest'),
           fetch('http://localhost:8000/api/simulation/overall-trips/latest'),
           fetch('http://localhost:8000/api/simulation/overall-slaughterhouses/latest'),
+          // ✅ Endpoint nuevo
           fetch('http://localhost:8000/api/simulation/get-routes'),
         ])
 
@@ -117,13 +147,31 @@ export default function SimulationPage() {
 
         const farmsData: OverallFarmsResponse = await farmsRes.json()
         const tripsData: OverallTripsResponse = await tripsRes.json()
-        const slaughterData: OverallSlaughterhousesResponse = await slaughterRes.json()
+        const slaughterData: OverallSlaughterhousesResponse =
+          await slaughterRes.json()
         const routesData: RoutesResponse = await routesRes.json()
 
         setOverallFarms(farmsData.overall_farms)
         setOverallTrips(tripsData.overall_trips)
         setOverallSlaughterhouses(slaughterData.overall_slaughterhouses)
-        setRoutes(routesData.routes || [])
+
+        // ✅ Normalización: del schema anidado al schema plano que usa la tabla
+        const normalizedRoutes: Route[] = (routesData.routes ?? []).map((r) => ({
+          trip_id: r.trip_id,
+          slaughterhouse_id: r.slaughterhouse?.id,
+          slaughterhouse_name: r.slaughterhouse?.name,
+          farm_ids: r.farms?.map((f) => f.farm_id) ?? [],
+          farm_names: r.farms?.map((f) => f.farm_name) ?? [],
+          day: r.day,
+          total_pigs: r.total_pigs,
+          distance_km: r.distance_km,
+          costo_viaje: r.cost,
+          purchase_cost: r.purchase_cost,
+          revenue: r.revenue,
+          profit: r.profit,
+        }))
+
+        setRoutes(normalizedRoutes)
       } catch (err: any) {
         setError(err.message ?? 'Error al cargar los datos')
       } finally {
@@ -162,7 +210,6 @@ export default function SimulationPage() {
     <Box className="simulation-page">
       <Container maxW="container.xl" py={8}>
         <VStack spacing={6} align="stretch">
-
           <Box className="simulation-content">
             {loading && (
               <Box className="simulation-loading">
