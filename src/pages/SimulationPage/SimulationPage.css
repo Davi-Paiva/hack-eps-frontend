@@ -1,6 +1,8 @@
 .simulation-page {
-  min-height: calc(100vh - 70px);
+  /* Antes: min-height: calc(100vh - 70px); */
+  height: calc(100vh - 70px);
   background: #1e1e1e;
+  overflow-y: auto;          /* Hace que la página sea scrolleable */
 }
 
 /* Header */
@@ -124,4 +126,69 @@
   margin-right: 0.25rem;
   font-size: 1.1rem;
   vertical-align: middle;
+}
+
+/* ===== Tabla de rutas scrolleable debajo de Trips ===== */
+
+.routes-table-container {
+  margin-top: 1rem;
+  background: #1f1f1f;
+  border-radius: 8px;
+  border: 1px solid #3a3a3a;
+  padding: 0.75rem 1rem;
+  /* El contenedor ya no scrollea, scrollea solo el body */
+  max-height: none;
+  overflow: hidden;
+  position: relative;
+}
+
+.routes-table-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.routes-table-header {
+  display: grid;
+  grid-template-columns: 0.7fr 0.7fr 3fr 1fr 1.2fr;
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #3a3a3a;
+  /* Quitamos sticky: ya no hace falta */
+  position: static;
+  background: #1f1f1f;
+  z-index: 1;
+}
+
+.routes-table-body {
+  margin-top: 0.5rem;
+  max-height: 220px;     /* ~4 filas visibles */
+  overflow-y: auto;      /* scroll solo en el body */
+}
+
+.routes-table-row {
+  display: grid;
+  grid-template-columns: 0.7fr 0.7fr 3fr 1fr 1.2fr;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #2b2b2b;
+}
+
+.routes-table-row:last-child {
+  border-bottom: none;
+}
+
+.routes-table-cell {
+  font-size: 0.85rem;
+  color: #d4d4d4;
+  text-align: left;
+  word-break: break-word;
+}
+
+.routes-table-cell-header {
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #a0a0a0;
 }

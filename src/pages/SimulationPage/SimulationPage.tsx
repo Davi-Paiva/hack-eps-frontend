@@ -72,14 +72,34 @@ type OverallSlaughterhouses = {
   total_beneficio_neto: number
 }
 
+// /api/simulation/get-routes
+type RoutesResponse = {
+  total_routes: number
+  routes: Route[]
+}
+
+type Route = {
+  trip_id: number
+  slaughterhouse_id: string
+  slaughterhouse_name: string
+  farm_ids: string[]
+  farm_names: string[]
+  day: number
+  total_pigs: number
+  distance_km: number
+  // Si en el futuro añades coste en el backend:
+  costo_viaje?: number
+}
+
 export default function SimulationPage() {
   const navigate = useNavigate()
 
-  // Ahora el estado guarda directamente los objetos "overall_*" ya desempaquetados
+  // Estados principales
   const [overallFarms, setOverallFarms] = useState<OverallFarms | null>(null)
   const [overallTrips, setOverallTrips] = useState<OverallTrips | null>(null)
   const [overallSlaughterhouses, setOverallSlaughterhouses] =
     useState<OverallSlaughterhouses | null>(null)
+  const [routes, setRoutes] = useState<Route[]>([])
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -90,24 +110,26 @@ export default function SimulationPage() {
         setLoading(true)
         setError(null)
 
-        const [farmsRes, tripsRes, slaughterRes] = await Promise.all([
+        const [farmsRes, tripsRes, slaughterRes, routesRes] = await Promise.all([
           fetch('http://localhost:8000/api/simulation/overall-farms/latest'),
           fetch('http://localhost:8000/api/simulation/overall-trips/latest'),
           fetch('http://localhost:8000/api/simulation/overall-slaughterhouses/latest'),
+          fetch('http://localhost:8000/api/simulation/get-routes'),
         ])
 
-        if (!farmsRes.ok || !tripsRes.ok || !slaughterRes.ok) {
+        if (!farmsRes.ok || !tripsRes.ok || !slaughterRes.ok || !routesRes.ok) {
           throw new Error('Alguna petición ha fallado')
         }
 
         const farmsData: OverallFarmsResponse = await farmsRes.json()
         const tripsData: OverallTripsResponse = await tripsRes.json()
         const slaughterData: OverallSlaughterhousesResponse = await slaughterRes.json()
+        const routesData: RoutesResponse = await routesRes.json()
 
-        // Desempaquetamos las claves "overall_*"
         setOverallFarms(farmsData.overall_farms)
         setOverallTrips(tripsData.overall_trips)
         setOverallSlaughterhouses(slaughterData.overall_slaughterhouses)
+        setRoutes(routesData.routes || [])
       } catch (err: any) {
         setError(err.message ?? 'Error al cargar los datos')
       } finally {
@@ -134,6 +156,13 @@ export default function SimulationPage() {
     slaughterNetIsPositive ? 'simulation-card-value-positive' : 'simulation-card-value-negative'
   }`
   const slaughterNetArrow = slaughterNetIsPositive ? '↑' : '↓'
+
+  // Helper para construir la ruta en texto
+  const buildRoutePath = (route: Route): string => {
+    const middle = route.farm_names.join(' --> ')
+    if (!middle) return `${route.slaughterhouse_name} --> ${route.slaughterhouse_name}`
+    return `${route.slaughterhouse_name} --> ${middle} --> ${route.slaughterhouse_name}`
+  }
 
   return (
     <Box className="simulation-page">
@@ -276,6 +305,46 @@ export default function SimulationPage() {
                       </Text>
                     </Box>
                   </SimpleGrid>
+
+                  {/* Tabla de rutas scrolleable */}
+                  <Box mt={6} className="routes-table-container">
+                    <Box className="routes-table-header">
+                      <Text className="routes-table-cell routes-table-cell-header">
+                        Trip ID
+                      </Text>
+                      <Text className="routes-table-cell routes-table-cell-header">
+                        Día
+                      </Text>
+                      <Text className="routes-table-cell routes-table-cell-header">
+                        Ruta
+                      </Text>
+                      <Text className="routes-table-cell routes-table-cell-header">
+                        Km totales
+                      </Text>
+                      <Text className="routes-table-cell routes-table-cell-header">
+                        Coste viaje
+                      </Text>
+                    </Box>
+                    <Box className="routes-table-body">
+                      {routes.map((route) => (
+                        <Box key={route.trip_id} className="routes-table-row">
+                          <Text className="routes-table-cell">{route.trip_id}</Text>
+                          <Text className="routes-table-cell">{route.day + 1}</Text>
+                          <Text className="routes-table-cell">
+                            {buildRoutePath(route)}
+                          </Text>
+                          <Text className="routes-table-cell">
+                            {route.distance_km.toFixed(2)}
+                          </Text>
+                          <Text className="routes-table-cell">
+                            {route.costo_viaje !== undefined
+                              ? route.costo_viaje.toLocaleString()
+                              : '-'}
+                          </Text>
+                        </Box>
+                      ))}
+                    </Box>
+                  </Box>
                 </Box>
 
                 {/* SLAUGHTERHOUSES */}
