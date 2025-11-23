@@ -73,11 +73,11 @@ export default function ImportSlaughterhouse({ onSuccess }: ImportSlaughterhouse
 
   return (
     <VStack spacing={5} w="full">
-      <Heading size="lg" mb={2}>Add Slaughterhouse</Heading>
+      <Heading size="lg" mb={2} color="white">Add Slaughterhouse</Heading>
       
       {/* CSV Import Section */}
-      <VStack spacing={3} w="full" p={4} bg="gray.50" borderRadius="md">
-        <Text fontWeight="bold" fontSize="md">Import from CSV</Text>
+      <VStack spacing={3} w="full" p={4} bg="gray.800" borderRadius="md" borderWidth="1px" borderColor="gray.700">
+        <Text fontWeight="bold" fontSize="md" color="gray.300">Import from CSV</Text>
         <FormControl>
           <Input
             type="file"
@@ -85,21 +85,33 @@ export default function ImportSlaughterhouse({ onSuccess }: ImportSlaughterhouse
             onChange={handleCSVUpload}
             disabled={isUploadingCSV}
             p={1}
+            color="white"
+            bg="gray.900"
+            borderColor="gray.600"
+            _hover={{ borderColor: "gray.500" }}
           />
         </FormControl>
-        {isUploadingCSV && <Text fontSize="sm" color="blue.500">Uploading...</Text>}
+        {isUploadingCSV && <Text fontSize="sm" color="orange.400">Uploading...</Text>}
       </VStack>
 
-      <Divider />
+      <Divider borderColor="gray.700" />
 
       {/* Manual Entry Form */}
       <VStack as="form" spacing={5} w="full" onSubmit={handleSubmit}>
-        <Text fontWeight="bold" fontSize="md">Or add manually</Text>
+        <Text fontWeight="bold" fontSize="md" color="gray.300">Or add manually</Text>
       <FormField label="Slaughterhouse Name" value={form.name} onChange={update('name')} placeholder="Enter name" />
       <FormField label="Latitude" value={form.lat} onChange={update('lat')} placeholder="41.608433" isNumber />
       <FormField label="Longitude" value={form.lon} onChange={update('lon')} placeholder="0.623446" isNumber />
       <FormField label="Daily Capacity" value={form.capacity_per_day} onChange={update('capacity_per_day')} placeholder="1000" isNumber />
-      <Button type="submit" colorScheme="blue" size="lg" w="full" isLoading={isSubmitting}>
+      <Button 
+        type="submit" 
+        size="lg" 
+        w="full" 
+        isLoading={isSubmitting}
+        bg="linear-gradient(to right, #fb923c, #f472b6)"
+        color="white"
+        _hover={{ bg: "linear-gradient(to right, #ff6b4a, #dd2a7b)" }}
+      >
         Add Slaughterhouse
       </Button>
       </VStack>

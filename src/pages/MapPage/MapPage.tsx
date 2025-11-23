@@ -17,9 +17,9 @@ import './MapPage.css'
 function FormModal({ isOpen, onClose, children }: { isOpen: boolean; onClose: () => void; children: ReactNode }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl" isCentered>
-      <ModalOverlay bg="blackAlpha.700" />
-      <ModalContent maxH="90vh" overflowY="auto">
-        <ModalCloseButton />
+      <ModalOverlay />
+      <ModalContent maxH="90vh" overflowY="auto" bg="black" borderColor="gray.700" borderWidth="1px">
+        <ModalCloseButton color="white" />
         <ModalBody p={6}>{children}</ModalBody>
       </ModalContent>
     </Modal>

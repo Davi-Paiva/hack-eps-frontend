@@ -313,7 +313,7 @@ export default function SimulationPage() {
                   </Heading>
                   <SimpleGrid columns={{ base: 1, sm: 2, md: 5 }} spacing={4}>
                     <Box className="simulation-card">
-                      <Text className="simulation-card-label">Viajes realizados</Text>
+                      <Text className="simulation-card-label">Trips Completed</Text>
                       <Text className="simulation-card-value">
                         {overallTrips
                           ? overallTrips.total_viajes.toLocaleString()
