@@ -1,0 +1,16 @@
+.logo-image {
+  height: 60px;
+}
+
+.app-name {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-left: 10px;
+}
+
+.product-name {
+  align-items: center;
+  margin-left: 10%;
+  transition: transform 0.3s ease;
+  width: 100%;
+}

@@ -1,0 +1,22 @@
+.simulation-map-page {
+  min-height: calc(100vh - 70px);
+  background: #1e1e1e;
+}
+
+.simulation-map-title {
+  color: #d4d4d4;
+}
+
+.simulation-map-subtitle {
+  color: #a0a0a0;
+  font-size: 1.125rem;
+}
+
+.simulation-map-content {
+  background: #2d2d2d;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid #3a3a3a;
+  color: #d4d4d4;
+  min-height: 400px;
+}

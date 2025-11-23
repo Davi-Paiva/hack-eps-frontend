@@ -31,6 +31,12 @@ export default function NavLinks(){
               Tables
             </Button>
           </Link>
+
+      <Link to="/simulation">
+        <Button variant="ghost" size="md" className="navbar-button">
+          Simulation
+        </Button>
+      </Link>
     </HStack>
   );
 }
