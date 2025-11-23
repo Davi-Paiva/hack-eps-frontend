@@ -162,12 +162,6 @@ export default function SimulationPage() {
     <Box className="simulation-page">
       <Container maxW="container.xl" py={8}>
         <VStack spacing={6} align="stretch">
-          <Box className="simulation-header">
-            <Heading className="simulation-title">Simulation</Heading>
-            <Text className="simulation-subtitle">
-              Run simulations to optimize your supply chain
-            </Text>
-          </Box>
 
           <Box className="simulation-content">
             {loading && (
