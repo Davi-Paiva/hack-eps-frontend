@@ -30,14 +30,14 @@ const SlaughterhouseAddModal: React.FC<Props> = ({ isOpen, onClose, onCreateSucc
   const [name, setName] = React.useState('')
   const [lat, setLat] = React.useState<string>('')
   const [lon, setLon] = React.useState<string>('')
-  const [capacity, setCapacity] = React.useState<string>('')
+  const [capacity_per_day, setCapacity_per_day] = React.useState<string>('')
   const [saving, setSaving] = React.useState(false)
 
   const reset = () => {
     setName('')
     setLat('')
     setLon('')
-    setCapacity('')
+    setCapacity_per_day('')
   }
 
   const handleCreate = async () => {
@@ -46,7 +46,7 @@ const SlaughterhouseAddModal: React.FC<Props> = ({ isOpen, onClose, onCreateSucc
       name: name.trim(),
       lat: Number(lat),
       lon: Number(lon),
-      capacity_per_day: Number(capacity),
+      capacity_per_day: Number(capacity_per_day),
     }
     const ok = await slaughterhouseService.create(payload as Slaughterhouse)
     setSaving(false)
@@ -86,7 +86,7 @@ const SlaughterhouseAddModal: React.FC<Props> = ({ isOpen, onClose, onCreateSucc
             </FormControl>
             <FormControl>
               <FormLabel>Capacity/day</FormLabel>
-              <NumberInput value={capacity} onChange={(v) => setCapacity(v)}>
+              <NumberInput value={capacity_per_day} onChange={(v) => setCapacity_per_day(v)}>
                 <NumberInputField />
               </NumberInput>
             </FormControl>

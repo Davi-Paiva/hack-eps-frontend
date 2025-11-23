@@ -10,6 +10,8 @@ import FarmAddModal from '../../components/FarmAddModal/FarmAddModal'
 import { Button } from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
 import FarmEditModal from '../../components/FarmEditModal/FarmEditModal'
+import DeleteConfirm from '../../components/DeleteConfirm/DeleteConfirm'
+import resolveId from '../../utils/idResolver'
 import type { Farm } from '../../types/farm'
 
 const FarmsPage: React.FC = () => {
@@ -17,31 +19,37 @@ const FarmsPage: React.FC = () => {
   const [selectedFarm, setSelectedFarm] = React.useState<Farm | null>(null)
   const [isEditOpen, setIsEditOpen] = React.useState(false)
   const [isAddOpen, setIsAddOpen] = React.useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
+  const [isDeleting, setIsDeleting] = React.useState(false)
   const [reloadKey, setReloadKey] = React.useState(0)
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!selectedFarm) return
-    // prefer non-empty domain id `farm_id`, otherwise fall back to Mongo `_id`
-    const raw = (selectedFarm as any).farm_id
-    const idToUse = raw && String(raw).trim().length > 0 ? String(raw).trim() : selectedFarm._id
-    console.log('handleDelete: selectedFarm idToUse=', idToUse, 'selectedFarm=', selectedFarm)
+    setIsDeleteOpen(true)
+  }
+
+  const performDelete = async () => {
+    if (!selectedFarm) return
+    const idToUse = resolveId(selectedFarm, ['farm_id', '_id'])
     if (!idToUse) {
       console.warn('No usable id found for selected farm')
       return
     }
-    const ok = window.confirm(`Delete farm "${selectedFarm.name}"?`)
-    if (!ok) return
+    setIsDeleting(true)
     try {
       const success = await farmService.delete(String(idToUse))
       if (success) {
         setReloadKey((r) => r + 1)
         setSelectedFarm(null)
+        setIsDeleteOpen(false)
       } else {
         window.alert('Failed to delete farm')
       }
     } catch (err) {
       console.error(err)
       window.alert('Error deleting farm')
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -86,6 +94,14 @@ const FarmsPage: React.FC = () => {
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}
         onCreateSuccess={() => setReloadKey((r) => r + 1)}
+      />
+      <DeleteConfirm
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        onConfirm={performDelete}
+        isLoading={isDeleting}
+        title="Delete Farm"
+        description={`Are you sure you want to delete "${selectedFarm?.name}"? This action cannot be undone.`}
       />
     </Box>
   )
