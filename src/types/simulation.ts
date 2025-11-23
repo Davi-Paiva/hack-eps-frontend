@@ -31,3 +31,30 @@ export interface SimulationResponse {
   total_routes: number
   routes: Trip[]
 }
+
+export interface SlaughterHouseState {
+  id: string
+  name: string
+  lat: number
+  lon: number
+  numero_cerdos: number
+  diferencia_cerdos: number
+}
+
+export interface FarmState {
+  id: string
+  name: string
+  lat: number
+  lon: number
+  numero_cerdos: number
+  diferencia_cerdos: number
+  gasto_alimento_acumulado: number
+}
+
+export interface SimulationDayResponse {
+  simulation_id: string
+  timestamp: string
+  day: number
+  slaughterhouses: SlaughterHouseState[]
+  farms: FarmState[]
+}

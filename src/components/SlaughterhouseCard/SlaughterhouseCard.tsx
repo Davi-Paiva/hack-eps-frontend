@@ -1,11 +1,13 @@
-import { Box, VStack, HStack, Text, Heading } from '@chakra-ui/react'
+import { Box, VStack, HStack, Text, Heading, Badge } from '@chakra-ui/react'
 import type { SlaughterhouseDetails } from '../../types/entityDetails'
+import type { SlaughterHouseState } from '../../types/simulation'
 
 interface SlaughterhouseCardProps {
   slaughterhouse: SlaughterhouseDetails
+  slaughterhouseState?: SlaughterHouseState
 }
 
-export default function SlaughterhouseCard({ slaughterhouse }: SlaughterhouseCardProps) {
+export default function SlaughterhouseCard({ slaughterhouse, slaughterhouseState }: SlaughterhouseCardProps) {
   return (
     <Box
       bg="#2d2d2d"
@@ -19,6 +21,23 @@ export default function SlaughterhouseCard({ slaughterhouse }: SlaughterhouseCar
     >
       <VStack align="stretch" spacing={3}>
         <Heading size="md" color="#d4d4d4">{slaughterhouse.name}</Heading>
+        
+        {slaughterhouseState && (
+          <HStack justify="space-between">
+            <Text color="#a0a0a0" fontSize="sm">Current Pigs:</Text>
+            <HStack spacing={2}>
+              <Text color="#d4d4d4" fontWeight="bold">{slaughterhouseState.numero_cerdos} pigs</Text>
+              {slaughterhouseState.diferencia_cerdos !== 0 && (
+                <Badge 
+                  colorScheme={slaughterhouseState.diferencia_cerdos > 0 ? 'green' : 'red'}
+                  fontSize="xs"
+                >
+                  {slaughterhouseState.diferencia_cerdos > 0 ? '+' : ''}{slaughterhouseState.diferencia_cerdos}
+                </Badge>
+              )}
+            </HStack>
+          </HStack>
+        )}
         
         <HStack justify="space-between">
           <Text color="#a0a0a0" fontSize="sm">Capacity/Day:</Text>
