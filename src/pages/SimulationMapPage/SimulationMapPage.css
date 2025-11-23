@@ -1,22 +1,61 @@
 .simulation-map-page {
-  min-height: calc(100vh - 70px);
-  background: #1e1e1e;
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.simulation-header {
+  position: absolute;
+  top: 90px;
+  left: 2rem;
+  z-index: 100;
+  background: rgba(45, 45, 45, 0.95);
+  padding: 1.5rem 2rem;
+  border-radius: 8px;
+  border: 1px solid #3a3a3a;
+  backdrop-filter: blur(10px);
 }
 
 .simulation-map-title {
   color: #d4d4d4;
+  font-size: 1.5rem;
+  margin: 0;
 }
 
 .simulation-map-subtitle {
   color: #a0a0a0;
-  font-size: 1.125rem;
+  font-size: 0.875rem;
+  margin: 0.5rem 0 0 0;
 }
 
-.simulation-map-content {
-  background: #2d2d2d;
-  padding: 2rem;
-  border-radius: 8px;
-  border: 1px solid #3a3a3a;
+.day-selector {
+  background: #1e1e1e !important;
+  color: #d4d4d4 !important;
+  border: 1px solid #3a3a3a !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+}
+
+.day-selector:hover {
+  border-color: #ff6b4a !important;
+}
+
+.day-selector:focus {
+  border-color: #ff6b4a !important;
+  box-shadow: 0 0 0 1px #ff6b4a !important;
+}
+
+.day-selector option {
+  background: #1e1e1e;
   color: #d4d4d4;
-  min-height: 400px;
+}
+
+.simulation-map-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
