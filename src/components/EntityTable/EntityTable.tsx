@@ -22,8 +22,6 @@ type Props<T> = {
   fetcher: () => Promise<T[]>
   columns: Column<T>[]
   rowKey?: (item: T) => string
-  /** optional max height for table body (enables scrolling) */
-  tableMaxH?: string | number
   /** optional search query to filter displayed items */
   searchQuery?: string
   /** optional key to trigger refetch when changed */
@@ -36,12 +34,9 @@ type Props<T> = {
   onRowSelect?: (item: T | null) => void
 }
 
-function EntityTable<T>({ fetcher, columns, rowKey, tableMaxH = '420px', searchQuery, reloadKey, filterFn, rowSelectable = true, onRowSelect }: Props<T>) {
+function EntityTable<T>({ fetcher, columns, rowKey, searchQuery, reloadKey, filterFn, rowSelectable = true, onRowSelect }: Props<T>) {
   const [items, setItems] = useState<T[]>([])
   const [loading, setLoading] = useState<boolean>(true)
-  const evenBg = 'gray.800'
-  const hoverBg = 'gray.700'
-  const selectedBg = 'blue.900'
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
 
   useEffect(() => {
@@ -84,19 +79,67 @@ function EntityTable<T>({ fetcher, columns, rowKey, tableMaxH = '420px', searchQ
   }
 
   return (
-    <Box>
-      <TableContainer maxH={tableMaxH} overflowY="auto" onClick={handleContainerClick}>
+    <Box 
+      bg="transparent"
+      borderRadius="0.5rem"
+      overflow="hidden"
+      border="1px solid"
+      borderColor="#252525"
+      h="100%"
+      display="flex"
+      flexDirection="column"
+    >
+      <TableContainer 
+        flex="1"
+        overflowY="auto" 
+        onClick={handleContainerClick}
+        sx={{
+          '&::-webkit-scrollbar': {
+            width: '6px',
+          },
+          '&::-webkit-scrollbar-track': {
+            background: 'transparent',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            background: '#ff6b4a',
+            borderRadius: '3px',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            background: '#ff4d93',
+          },
+        }}
+      >
         {loading ? (
-          <Spinner />
+          <Box display="flex" justifyContent="center" alignItems="center" py={12}>
+            <Spinner 
+              color="#ff6b4a" 
+              size="xl"
+              thickness="4px"
+              speed="0.65s"
+            />
+          </Box>
         ) : items.length === 0 ? (
-          <Text>No items</Text>
+          <Box display="flex" justifyContent="center" alignItems="center" py={12}>
+            <Text color="#a0a0a0" fontSize="lg">No items found</Text>
+          </Box>
         ) : (
-          <Table variant="unstyled" size="md">
-            <Thead>
+          <Table variant="unstyled" size="sm">
+            <Thead position="sticky" top={0} bg="#2d2d2d" zIndex={1}>
               <Tr>
-                <Th w="40px" borderBottom="none"></Th>
                 {columns.map((c) => (
-                  <Th key={c.header} isNumeric={c.isNumeric} fontSize="md" py={3} borderBottom="none">
+                  <Th 
+                    key={c.header} 
+                    isNumeric={c.isNumeric} 
+                    fontSize="xs" 
+                    py={4}
+                    px={4}
+                    color="#a0a0a0"
+                    textTransform="uppercase"
+                    letterSpacing="wider"
+                    fontWeight="600"
+                    borderBottom="2px solid"
+                    borderColor="#3a3a3a"
+                  >
                     {c.header}
                   </Th>
                 ))}
@@ -109,39 +152,35 @@ function EntityTable<T>({ fetcher, columns, rowKey, tableMaxH = '420px', searchQ
                 return (
                   <Tr
                     key={key}
-                    bg={isSelected ? selectedBg : idx % 2 === 0 ? 'black' : evenBg}
-                    _hover={{ bg: hoverBg }}
-                      cursor={rowSelectable && rowKey ? 'pointer' : undefined}
-                      onClick={() => {
-                        if (rowSelectable && rowKey) {
-                          setSelectedKey((prev) => {
-                            const newKey = prev === key ? null : key
-                            onRowSelect?.(newKey === null ? null : it)
-                            return newKey
-                          })
-                        }
-                      }}
+                    bg={isSelected ? 'rgba(255, 107, 74, 0.12)' : 'transparent'}
+                    _hover={{ 
+                      bg: isSelected ? 'rgba(255, 107, 74, 0.18)' : 'rgba(58, 58, 58, 0.3)',
+                    }}
+                    cursor={rowSelectable && rowKey ? 'pointer' : undefined}
+                    transition="background 0.2s ease"
+                    borderBottom="1px solid"
+                    borderColor="#252525"
+                    onClick={() => {
+                      if (rowSelectable && rowKey) {
+                        setSelectedKey((prev) => {
+                          const newKey = prev === key ? null : key
+                          onRowSelect?.(newKey === null ? null : it)
+                          return newKey
+                        })
+                      }
+                    }}
                   >
-                    <Td w="40px" borderBottom="none">
-                      <Box
-                        w="16px"
-                        h="16px"
-                        borderRadius="50%"
-                        border="2px solid"
-                        borderColor={isSelected ? "blue.400" : "gray.500"}
-                        bg={isSelected ? "blue.400" : "transparent"}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        transition="all 0.2s"
-                      >
-                        {isSelected && (
-                          <Box w="6px" h="6px" borderRadius="50%" bg="white" />
-                        )}
-                      </Box>
-                    </Td>
                     {columns.map((c, ci) => (
-                      <Td key={ci} isNumeric={c.isNumeric} py={3} fontSize="md" borderBottom="none">
+                      <Td 
+                        key={ci} 
+                        isNumeric={c.isNumeric} 
+                        py={4}
+                        px={4}
+                        fontSize="sm" 
+                        color={isSelected ? "#ffffff" : "#d4d4d4"}
+                        fontWeight={isSelected ? "500" : "normal"}
+                        borderBottom="none"
+                      >
                         {c.accessor(it)}
                       </Td>
                     ))}

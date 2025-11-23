@@ -1,5 +1,5 @@
 import React from 'react'
-import { VStack, Button } from '@chakra-ui/react'
+import { VStack, Button, Box } from '@chakra-ui/react'
 import SlaughterhouseTable from '../../components/SlaughterhouseTable/SlaughterhouseTable'
 import SearchInput from '../../components/SearchInput/SearchInput'
 import { slaughterhouseService } from '../../services/slaughterhouseService'
@@ -50,13 +50,13 @@ const SlaughterhousesPage: React.FC = () => {
   return (
     <div className="slaughterhouses-page">
       <div className="slaughterhouses-container">
-        <VStack spacing={6} align="stretch">
+        <VStack spacing={4} align="stretch" h="100%">
           <div className="slaughterhouses-header">
             <div className="slaughterhouses-title">Slaughterhouses</div>
             <div className="slaughterhouses-title-accent" />
           </div>
           
-          <div className="slaughterhouses-controls">
+          <Box className="slaughterhouses-controls">
             <div className="slaughterhouses-search">
               <SearchInput
                 placeholder="Search slaughterhouses..."
@@ -69,18 +69,34 @@ const SlaughterhousesPage: React.FC = () => {
               <Button 
                 leftIcon={<AddIcon />} 
                 size="md" 
-                bg="linear-gradient(to right, #fb923c, #f472b6)"
+                bg="linear-gradient(to right, #ff6b4a, #dd2a7b)"
                 color="white"
-                _hover={{ bg: "linear-gradient(to right, #ff6b4a, #dd2a7b)", transform: "translateY(-2px)", boxShadow: "0 10px 20px rgba(251, 146, 60, 0.3)" }}
+                borderRadius="0.75rem"
+                fontWeight="600"
+                _hover={{ 
+                  bg: "linear-gradient(to right, #ff4d93, #dd2a7b)", 
+                  transform: "translateY(-2px)", 
+                  boxShadow: "0 10px 20px rgba(255, 107, 74, 0.4)" 
+                }}
+                transition="all 0.3s ease"
                 onClick={() => setIsAddOpen(true)}
               >
                 Add Slaughterhouse
               </Button>
               <Button
                 size="md"
-                bg="linear-gradient(to right, #fbbf24, #f59e0b)"
+                bg="#3a3a3a"
                 color="white"
-                _hover={{ bg: "linear-gradient(to right, #f59e0b, #d97706)", transform: "translateY(-2px)", boxShadow: "0 10px 20px rgba(251, 191, 36, 0.3)" }}
+                borderRadius="0.75rem"
+                fontWeight="600"
+                border="1px solid"
+                borderColor="#3a3a3a"
+                _hover={{ 
+                  bg: "#4a4a4a",
+                  borderColor: "#ff6b4a",
+                  transform: "translateY(-2px)"
+                }}
+                transition="all 0.3s ease"
                 onClick={() => setIsEditOpen(true)}
                 isDisabled={!selectedSlaughterhouse}
               >
@@ -88,20 +104,29 @@ const SlaughterhousesPage: React.FC = () => {
               </Button>
               <Button
                 size="md"
-                bg="linear-gradient(to right, #ef4444, #dc2626)"
+                bg="#3a3a3a"
                 color="white"
-                _hover={{ bg: "linear-gradient(to right, #dc2626, #b91c1c)", transform: "translateY(-2px)", boxShadow: "0 10px 20px rgba(239, 68, 68, 0.3)" }}
+                borderRadius="0.75rem"
+                fontWeight="600"
+                border="1px solid"
+                borderColor="#3a3a3a"
+                _hover={{ 
+                  bg: "#ef4444",
+                  borderColor: "#ef4444",
+                  transform: "translateY(-2px)"
+                }}
+                transition="all 0.3s ease"
                 onClick={handleDelete}
                 isDisabled={!selectedSlaughterhouse}
               >
                 Delete
               </Button>
             </div>
-          </div>
+          </Box>
           
-          <div className="slaughterhouses-table-container">
+          <Box className="slaughterhouses-table-container" flex="1" minH="0">
             <SlaughterhouseTable searchQuery={query} onRowSelect={setSelectedSlaughterhouse} reloadKey={reloadKey} />
-          </div>
+          </Box>
         </VStack>
       </div>
       <SlaughterhouseEditModal

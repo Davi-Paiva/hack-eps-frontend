@@ -1,19 +1,27 @@
 .farms-page {
   padding: 2rem;
   background: #1e1e1e;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .farms-container {
-  background: black;
+  background: #2d2d2d;
   border-radius: 1rem;
   padding: 2rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(31, 41, 55, 1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.45);
+  border: 1px solid #3a3a3a;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 90%;
 }
 
 .farms-header {
-  margin-bottom: 1.5rem;
+  flex-shrink: 0;
 }
 
 .farms-title {
@@ -33,8 +41,8 @@
 .farms-controls {
   display: flex;
   gap: 1rem;
-  margin-bottom: 1.5rem;
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .farms-search {
@@ -48,10 +56,14 @@
 }
 
 .farms-table-container {
-  background: #1a1a1a;
+  background: transparent;
   border-radius: 0.5rem;
-  padding: 1rem;
-  border: 1px solid rgba(31, 41, 55, 1);
+  padding: 0;
+  border: none;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .btn-gradient-green {
