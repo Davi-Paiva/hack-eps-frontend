@@ -10,7 +10,6 @@ import {
   Spinner,
   Box,
   Text,
-  useColorModeValue,
 } from '@chakra-ui/react'
 
 type Column<T> = {
@@ -40,9 +39,9 @@ type Props<T> = {
 function EntityTable<T>({ fetcher, columns, rowKey, tableMaxH = '420px', searchQuery, reloadKey, filterFn, rowSelectable = true, onRowSelect }: Props<T>) {
   const [items, setItems] = useState<T[]>([])
   const [loading, setLoading] = useState<boolean>(true)
-  const evenBg = useColorModeValue('gray.50', 'gray.700')
-  const hoverBg = useColorModeValue('gray.100', 'gray.600')
-  const selectedBg = useColorModeValue('blue.50', 'blue.900')
+  const evenBg = 'gray.800'
+  const hoverBg = 'gray.700'
+  const selectedBg = 'blue.900'
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
 
   useEffect(() => {
@@ -92,11 +91,11 @@ function EntityTable<T>({ fetcher, columns, rowKey, tableMaxH = '420px', searchQ
         ) : items.length === 0 ? (
           <Text>No items</Text>
         ) : (
-          <Table variant="simple" size="md">
+          <Table variant="unstyled" size="md">
             <Thead>
               <Tr>
                 {columns.map((c) => (
-                  <Th key={c.header} isNumeric={c.isNumeric} fontSize="md" py={3}>
+                  <Th key={c.header} isNumeric={c.isNumeric} fontSize="md" py={3} borderBottom="none">
                     {c.header}
                   </Th>
                 ))}
@@ -109,7 +108,7 @@ function EntityTable<T>({ fetcher, columns, rowKey, tableMaxH = '420px', searchQ
                 return (
                   <Tr
                     key={key}
-                    bg={isSelected ? selectedBg : idx % 2 === 0 ? evenBg : undefined}
+                    bg={isSelected ? selectedBg : idx % 2 === 0 ? 'black' : evenBg}
                     _hover={{ bg: hoverBg }}
                       cursor={rowSelectable && rowKey ? 'pointer' : undefined}
                       onClick={() => {
@@ -123,7 +122,7 @@ function EntityTable<T>({ fetcher, columns, rowKey, tableMaxH = '420px', searchQ
                       }}
                   >
                     {columns.map((c, ci) => (
-                      <Td key={ci} isNumeric={c.isNumeric} py={3} fontSize="md">
+                      <Td key={ci} isNumeric={c.isNumeric} py={3} fontSize="md" borderBottom="none">
                         {c.accessor(it)}
                       </Td>
                     ))}

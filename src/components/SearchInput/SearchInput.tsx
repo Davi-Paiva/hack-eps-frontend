@@ -60,7 +60,7 @@ const SearchInput: React.FC<Props> = ({
   return (
     <Box>
       <InputGroup>
-        <InputLeftElement pointerEvents="none">
+        <InputLeftElement pointerEvents="none" color="black">
           <FiSearch />
         </InputLeftElement>
         <Input
@@ -71,6 +71,8 @@ const SearchInput: React.FC<Props> = ({
           onKeyDown={handleKeyDown}
           bg={bg}
           size={size}
+          color="black"
+          _placeholder={{ color: 'gray.600' }}
         />
         <InputRightElement>
           {internal ? (
@@ -80,6 +82,8 @@ const SearchInput: React.FC<Props> = ({
               size={size}
               variant="ghost"
               onClick={handleClear}
+              color="black"
+              _hover={{ bg: 'gray.200' }}
             />
           ) : (
             <IconButton
@@ -88,6 +92,8 @@ const SearchInput: React.FC<Props> = ({
               size={size}
               variant="ghost"
               onClick={triggerSearch}
+              color="black"
+              _hover={{ bg: 'gray.200' }}
             />
           )}
         </InputRightElement>
