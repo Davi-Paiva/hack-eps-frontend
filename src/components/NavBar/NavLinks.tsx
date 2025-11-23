@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 export default function NavLinks(){
   return (
     <HStack gap={8} className="nav-links">
-      
+
       <Link to="/map">
         <Button variant="ghost" size="md" className="navbar-button">
           Map

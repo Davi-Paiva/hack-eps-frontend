@@ -59,3 +59,47 @@
   top: 0;
   left: 0;
 }
+
+.trips-info-panel {
+  position: absolute;
+  top: 90px;
+  right: 2rem;
+  z-index: 100;
+  background: rgba(45, 45, 45, 0.95);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #3a3a3a;
+  backdrop-filter: blur(10px);
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.trips-info-content {
+  padding-right: 8px;
+}
+
+.trips-info-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.trips-info-content::-webkit-scrollbar-track {
+  background: #1e1e1e;
+  border-radius: 3px;
+}
+
+.trips-info-content::-webkit-scrollbar-thumb {
+  background: #ff6b4a;
+  border-radius: 3px;
+}
+
+.trips-info-content::-webkit-scrollbar-thumb:hover {
+  background: #ff4d93;
+}
+
+.trip-card {
+  transition: all 0.2s ease;
+}
+
+.trip-card:hover {
+  border-color: #ff6b4a !important;
+}
