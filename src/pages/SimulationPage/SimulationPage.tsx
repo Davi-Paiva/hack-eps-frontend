@@ -12,58 +12,74 @@ import {
 import { useNavigate } from 'react-router-dom'
 import './SimulationPage.css'
 
-type ObjectOverallFarms = {
-  num_days: number
-  overrall_farms: OverallFarms
-  simulation_id: number
+// ===== Tipos que reflejan EXACTAMENTE los JSON de tus endpoints =====
+
+// /api/simulation/overall-farmls/latest
+type OverallFarmsResponse = {
+  simulation_id: string
   timestamp: string
+  num_days: number
+  overall_farms: OverallFarms
 }
 
 type OverallFarms = {
   beneficio_bruto: number
-  costes: number
+  coste: number
   beneficio_neto: number
   perdidas_por_penalizacion: number
 }
 
-type ObjectOverallTrips = {
+// /api/simulation/overall-trips/latest
+type OverallTripsResponse = {
+  simulation_id: string
+  timestamp: string
   num_days: number
   overall_trips: OverallTrips
-  simulation_id: number
-  timestamp: string
 }
 
 type OverallTrips = {
-  viajes_totales: number
+  total_viajes: number
   total_camiones: TrucksInfo
   coste_total: number
 }
+
 type TrucksInfo = {
   semana_1: number
   semana_2: number
   total: number
 }
 
-type ObjectOverallSlaughterhouses = {
+// /api/simulation/overall-slaughterhouses/latest
+type OverallSlaughterhousesResponse = {
+  simulation_id: string
+  timestamp: string
   num_days: number
   overall_slaughterhouses: OverallSlaughterhouses
-  simulation_id: number
-  timestamp: string
 }
+
+type Slaughterhouse = {
+  nombre: string
+  slaughterhouse_id: string
+  beneficio_bruto: number
+  coste: number
+  beneficio_neto: number
+}
+
 type OverallSlaughterhouses = {
+  slaughterhouses: Slaughterhouse[]
   total_beneficio_bruto: number
-  total_costes: number
+  total_coste: number
   total_beneficio_neto: number
-  slaughterhouses: string[]
 }
 
 export default function SimulationPage() {
   const navigate = useNavigate()
 
-  const [overallFarms, setOverallFarms] = useState<ObjectOverallFarms | null>(null)
-  const [overallTrips, setOverallTrips] = useState<ObjectOverallTrips | null>(null)
+  // Ahora el estado guarda directamente los objetos "overall_*" ya desempaquetados
+  const [overallFarms, setOverallFarms] = useState<OverallFarms | null>(null)
+  const [overallTrips, setOverallTrips] = useState<OverallTrips | null>(null)
   const [overallSlaughterhouses, setOverallSlaughterhouses] =
-    useState<ObjectOverallSlaughterhouses | null>(null)
+    useState<OverallSlaughterhouses | null>(null)
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -84,12 +100,12 @@ export default function SimulationPage() {
           throw new Error('Alguna petición ha fallado')
         }
 
-        const farmsData = await farmsRes.json()
-        const tripsData = await tripsRes.json()
-        const slaughterData = await slaughterRes.json()
+        const farmsData: OverallFarmsResponse = await farmsRes.json()
+        const tripsData: OverallTripsResponse = await tripsRes.json()
+        const slaughterData: OverallSlaughterhousesResponse = await slaughterRes.json()
 
-        // Claves según tu especificación
-        setOverallFarms(farmsData.overrall_farms)
+        // Desempaquetamos las claves "overall_*"
+        setOverallFarms(farmsData.overall_farms)
         setOverallTrips(tripsData.overall_trips)
         setOverallSlaughterhouses(slaughterData.overall_slaughterhouses)
       } catch (err: any) {
@@ -103,15 +119,15 @@ export default function SimulationPage() {
   }, [])
 
   // Farms neto: clase + flecha según signo
-  const farmsNetValue = overallFarms?.overrall_farms.beneficio_neto
+  const farmsNetValue = overallFarms?.beneficio_neto
   const farmsNetIsPositive = farmsNetValue === undefined ? true : farmsNetValue >= 0
   const farmsNetClass = `simulation-card-value ${
     farmsNetIsPositive ? 'simulation-card-value-positive' : 'simulation-card-value-negative'
   }`
   const farmsNetArrow = farmsNetIsPositive ? '↑' : '↓'
 
-  // Slaughterhouses neto: clase + flecha según signo
-  const slaughterNetValue = overallSlaughterhouses?.overall_slaughterhouses.total_beneficio_neto
+  // Slaughterhouses neto: clase + flecha según signo (usamos total_beneficio_neto)
+  const slaughterNetValue = overallSlaughterhouses?.total_beneficio_neto
   const slaughterNetIsPositive =
     slaughterNetValue === undefined ? true : slaughterNetValue >= 0
   const slaughterNetClass = `simulation-card-value ${
@@ -163,7 +179,7 @@ export default function SimulationPage() {
                       <Text className="simulation-card-value simulation-card-value-positive">
                         <span className="simulation-card-arrow">↑</span>
                         {overallFarms
-                          ? overallFarms.overrall_farms.beneficio_bruto.toLocaleString()
+                          ? overallFarms.beneficio_bruto.toLocaleString()
                           : '-'}
                       </Text>
                     </Box>
@@ -173,7 +189,7 @@ export default function SimulationPage() {
                       <Text className="simulation-card-label">Coste</Text>
                       <Text className="simulation-card-value simulation-card-value-negative">
                         <span className="simulation-card-arrow">↓</span>
-                        {overallFarms ? overallFarms.overrall_farms.costes.toLocaleString() : '-'}
+                        {overallFarms ? overallFarms.coste.toLocaleString() : '-'}
                       </Text>
                     </Box>
 
@@ -185,7 +201,7 @@ export default function SimulationPage() {
                           <span className="simulation-card-arrow">
                             {farmsNetArrow}
                           </span>
-                          {overallFarms.overrall_farms.beneficio_neto.toLocaleString()}
+                          {overallFarms.beneficio_neto.toLocaleString()}
                         </Text>
                       ) : (
                         <Text className="simulation-card-value">-</Text>
@@ -200,7 +216,7 @@ export default function SimulationPage() {
                       <Text className="simulation-card-value simulation-card-value-negative">
                         <span className="simulation-card-arrow">↓</span>
                         {overallFarms
-                          ? overallFarms.overrall_farms.perdidas_por_penalizacion.toLocaleString()
+                          ? overallFarms.perdidas_por_penalizacion.toLocaleString()
                           : '-'}
                       </Text>
                     </Box>
@@ -222,7 +238,7 @@ export default function SimulationPage() {
                       <Text className="simulation-card-label">Viajes realizados</Text>
                       <Text className="simulation-card-value">
                         {overallTrips
-                          ? overallTrips.overall_trips.viajes_totales.toLocaleString()
+                          ? overallTrips.total_viajes.toLocaleString()
                           : '-'}
                       </Text>
                     </Box>
@@ -233,7 +249,7 @@ export default function SimulationPage() {
                       </Text>
                       <Text className="simulation-card-value">
                         {overallTrips
-                          ? overallTrips.overall_trips.total_camiones.semana_1.toLocaleString()
+                          ? overallTrips.total_camiones.semana_1.toLocaleString()
                           : '-'}
                       </Text>
                     </Box>
@@ -244,7 +260,7 @@ export default function SimulationPage() {
                       </Text>
                       <Text className="simulation-card-value">
                         {overallTrips
-                          ? overallTrips.overall_trips.total_camiones.semana_2.toLocaleString()
+                          ? overallTrips.total_camiones.semana_2.toLocaleString()
                           : '-'}
                       </Text>
                     </Box>
@@ -255,7 +271,7 @@ export default function SimulationPage() {
                       <Text className="simulation-card-value simulation-card-value-negative">
                         <span className="simulation-card-arrow">↓</span>
                         {overallTrips
-                          ? overallTrips.overall_trips.coste_total.toLocaleString()
+                          ? overallTrips.coste_total.toLocaleString()
                           : '-'}
                       </Text>
                     </Box>
@@ -273,29 +289,29 @@ export default function SimulationPage() {
                     Slaughterhouses
                   </Heading>
                   <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={4}>
-                    {/* Beneficio bruto - VERDE + ↑ */}
+                    {/* Beneficio bruto - VERDE + ↑ (total) */}
                     <Box className="simulation-card">
                       <Text className="simulation-card-label">Beneficio Bruto</Text>
                       <Text className="simulation-card-value simulation-card-value-positive">
                         <span className="simulation-card-arrow">↑</span>
                         {overallSlaughterhouses
-                          ? overallSlaughterhouses.overall_slaughterhouses.total_beneficio_bruto.toLocaleString()
+                          ? overallSlaughterhouses.total_beneficio_bruto.toLocaleString()
                           : '-'}
                       </Text>
                     </Box>
 
-                    {/* Costes - ROJO + ↓ */}
+                    {/* Costes - ROJO + ↓ (total) */}
                     <Box className="simulation-card">
                       <Text className="simulation-card-label">Costes</Text>
                       <Text className="simulation-card-value simulation-card-value-negative">
                         <span className="simulation-card-arrow">↓</span>
                         {overallSlaughterhouses
-                          ? overallSlaughterhouses.overall_slaughterhouses.total_costes.toLocaleString()
+                          ? overallSlaughterhouses.total_coste.toLocaleString()
                           : '-'}
                       </Text>
                     </Box>
 
-                    {/* Beneficio neto - VERDE/ROJO + ↑/↓ según signo */}
+                    {/* Beneficio neto - VERDE/ROJO + ↑/↓ según signo (total) */}
                     <Box className="simulation-card">
                       <Text className="simulation-card-label">Beneficio Neto</Text>
                       {overallSlaughterhouses ? (
@@ -303,7 +319,7 @@ export default function SimulationPage() {
                           <span className="simulation-card-arrow">
                             {slaughterNetArrow}
                           </span>
-                          {overallSlaughterhouses.overall_slaughterhouses.total_beneficio_neto.toLocaleString()}
+                          {overallSlaughterhouses.total_beneficio_neto.toLocaleString()}
                         </Text>
                       ) : (
                         <Text className="simulation-card-value">-</Text>
