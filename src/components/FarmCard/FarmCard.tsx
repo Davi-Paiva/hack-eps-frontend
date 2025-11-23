@@ -1,11 +1,13 @@
-import { Box, VStack, HStack, Text, Heading } from '@chakra-ui/react'
+import { Box, VStack, HStack, Text, Heading, Badge } from '@chakra-ui/react'
 import type { FarmDetails } from '../../types/entityDetails'
+import type { FarmState } from '../../types/simulation'
 
 interface FarmCardProps {
   farm: FarmDetails
+  farmState?: FarmState
 }
 
-export default function FarmCard({ farm }: FarmCardProps) {
+export default function FarmCard({ farm, farmState }: FarmCardProps) {
   return (
     <Box
       bg="#2d2d2d"
@@ -20,7 +22,32 @@ export default function FarmCard({ farm }: FarmCardProps) {
       <VStack align="stretch" spacing={3}>
         <Heading size="md" color="#d4d4d4">{farm.name}</Heading>
         
-        {farm.inventory_pigs !== undefined && (
+        {farmState && (
+          <>
+            <HStack justify="space-between">
+              <Text color="#a0a0a0" fontSize="sm">Current Pigs:</Text>
+              <HStack spacing={2}>
+                <Text color="#d4d4d4" fontWeight="bold">{farmState.numero_cerdos} pigs</Text>
+                {farmState.diferencia_cerdos !== 0 && (
+                  <Badge 
+                    colorScheme={farmState.diferencia_cerdos > 0 ? 'green' : 'red'}
+                    fontSize="xs"
+                  >
+                    {farmState.diferencia_cerdos > 0 ? '+' : ''}{farmState.diferencia_cerdos}
+                  </Badge>
+                )}
+              </HStack>
+            </HStack>
+            {farmState.gasto_alimento_acumulado > 0 && (
+              <HStack justify="space-between">
+                <Text color="#a0a0a0" fontSize="sm">Feed Cost:</Text>
+                <Text color="#ff6b4a" fontWeight="bold">€{farmState.gasto_alimento_acumulado.toFixed(2)}</Text>
+              </HStack>
+            )}
+          </>
+        )}
+        
+        {!farmState && farm.inventory_pigs !== undefined && (
           <HStack justify="space-between">
             <Text color="#a0a0a0" fontSize="sm">Inventory:</Text>
             <Text color="#d4d4d4" fontWeight="bold">{farm.inventory_pigs} pigs</Text>

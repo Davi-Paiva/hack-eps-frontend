@@ -9,8 +9,13 @@ import Map from '../Map/Map'
 import type { MapEntity } from '../../types/mapEntity'
 import type { Farm } from '../../types/farm'
 import type { Slaughterhouse } from '../../types/slaughterhouse'
+import type { SimulationDayResponse } from '../../types/simulation'
 
-export default function MapWithEntities() {
+interface MapWithEntitiesProps {
+  dayState?: SimulationDayResponse | null
+}
+
+export default function MapWithEntities({ dayState }: MapWithEntitiesProps) {
   const { mapRef } = useMap()
   const [selectedEntity, setSelectedEntity] = useState<MapEntity | null>(null)
   const [entityDetails, setEntityDetails] = useState<Farm | Slaughterhouse | null>(null)
@@ -95,6 +100,7 @@ export default function MapWithEntities() {
           entity={selectedEntity}
           details={entityDetails}
           position={cardPosition}
+          dayState={dayState}
         />
       )}
     </>

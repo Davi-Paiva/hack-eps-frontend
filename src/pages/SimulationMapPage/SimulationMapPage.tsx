@@ -2,22 +2,23 @@ import { Box } from '@chakra-ui/react'
 import './SimulationMapPage.css'
 import { useEffect, useState } from 'react'
 import { simulationService } from '../../services/simulationService'
-import type { SimulationResponse } from '../../types/simulation'
+import type { SimulationResponse, SimulationDayResponse } from '../../types/simulation'
 import { MapProvider, useMap } from '../../contexts/MapContext'
 import MapWithEntities from '../../components/MapWithEntities/MapWithEntities'
-import { drawSimulationRoutes, clearAllRoutes } from '../../utils/routeDrawer'
+import { drawSimulationRoutes } from '../../utils/routeDrawer'
 import DaySelectorBox from '../../components/DaySelectorBox/DaySelectorBox'
 import TripsInfoBox from '../../components/TripsInfoBox/TripsInfoBox'
 
 function SimulationMapContent() {
   const { mapRef } = useMap()
   const [routes, setRoutes] = useState<SimulationResponse | null>(null)
-  const [selectedDay, setSelectedDay] = useState<number>(1)
+  const [selectedDay, setSelectedDay] = useState<number | null>(null)
   const [availableDays, setAvailableDays] = useState<number[]>([])
+  const [dayState, setDayState] = useState<SimulationDayResponse | null>(null)
 
   useEffect(() => {
     const fetchRoutes = async () => {
-      const data = await simulationService.getRoutes(10)
+      const data = await simulationService.getRoutes()
       setRoutes(data)
       
       const daysWithRoutes = [...new Set(data.routes.map(r => r.day))].sort((a, b) => a - b)
@@ -39,8 +40,19 @@ function SimulationMapContent() {
     fetchRoutes()
   }, [])
 
+  // Fetch day state when selected day changes
   useEffect(() => {
-    if (!mapRef.current || !routes || routes.routes.length === 0) return
+    if (selectedDay === null) return
+    
+    const fetchDayState = async () => {
+      const data = await simulationService.getDayState(selectedDay)
+      setDayState(data)
+    }
+    fetchDayState()
+  }, [selectedDay])
+
+  useEffect(() => {
+    if (!mapRef.current || !routes || routes.routes.length === 0 || selectedDay === null) return
 
     const drawRoutes = async () => {
       if (!mapRef.current) return
@@ -69,20 +81,14 @@ function SimulationMapContent() {
     }
 
     drawRoutes()
-
-    return () => {
-      if (mapRef.current) {
-        clearAllRoutes(mapRef.current)
-      }
-    }
   }, [mapRef, routes, selectedDay])
 
-  const filteredRoutes = routes?.routes.filter(r => r.day === selectedDay) || []
-  const displayDay = availableDays[0] === 0 ? selectedDay + 1 : selectedDay
+  const filteredRoutes = selectedDay !== null ? routes?.routes.filter(r => r.day === selectedDay) || [] : []
+  const displayDay = selectedDay !== null ? (availableDays[0] === 0 ? selectedDay + 1 : selectedDay) : 0
 
   return (
     <Box className="simulation-map-page">
-      {mapRef.current && (
+      {mapRef.current && selectedDay !== null && (
         <>
           <DaySelectorBox 
             selectedDay={selectedDay}
@@ -98,7 +104,7 @@ function SimulationMapContent() {
         </>
       )}
       <Box className="simulation-map-container">
-        <MapWithEntities />
+        <MapWithEntities dayState={dayState} />
       </Box>
     </Box>
   )
