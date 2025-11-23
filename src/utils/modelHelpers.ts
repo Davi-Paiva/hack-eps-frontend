@@ -5,15 +5,15 @@ import { addClickableMarker } from './clickableMarkers'
 
 let modelCounter = 0
 
-export function addPig(
+export function addTruck(
   map: Map,
   longitude: number,
   latitude: number
 ): void {
-  const layerId = `pig-model-${modelCounter++}`
+  const layerId = `truck-model-${modelCounter++}`
   const layer = createThreeJSLayer(
     layerId,
-    '/models/pig.glb',
+    '/models/Truck.glb',
     longitude,
     latitude
   )

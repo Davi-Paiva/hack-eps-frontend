@@ -1,7 +1,9 @@
 import type { Map } from 'mapbox-gl'
 import type { Trip } from '../types/simulation'
+import { createAnimatedTruckLayer, clearAllTruckAnimations } from './animatedTruck'
 
 const activeRouteIds = new Set<string>()
+const activeTruckIds = new Set<string>()
 const MAPBOX_ACCESS_TOKEN = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || ''
 
 async function getDirectionsRoute(waypoints: [number, number][]): Promise<[number, number][] | null> {
@@ -50,22 +52,23 @@ async function getDirectionsRoute(waypoints: [number, number][]): Promise<[numbe
   }
 }
 
-export async function drawSimulationRoutes(map: Map, routes: Trip[]): Promise<void> {
+export async function drawSimulationRoutes(map: Map, routes: Trip[], withTrucks: boolean = false): Promise<void> {
   clearAllRoutes(map)
   
   if (routes.length === 0) return
 
   for (const route of routes) {
     try {
-      await drawSingleRoute(map, route)
+      await drawSingleRoute(map, route, withTrucks)
     } catch (error) {
       console.error(`Error drawing route ${route.trip_id}:`, error)
     }
   }
 }
 
-async function drawSingleRoute(map: Map, route: Trip): Promise<boolean> {
+async function drawSingleRoute(map: Map, route: Trip, withTrucks: boolean = false): Promise<boolean> {
   const routeId = `route-${route.trip_id}`
+  const truckId = `truck-${route.trip_id}`
   
   if (!route.slaughterhouse?.lat || !route.slaughterhouse?.lon) return false
   if (!route.farms || route.farms.length === 0) return false
@@ -137,6 +140,13 @@ async function drawSingleRoute(map: Map, route: Trip): Promise<boolean> {
   }, firstSymbolLayer?.id)
   
   activeRouteIds.add(routeId)
+  
+  if (withTrucks) {
+    const truckLayer = createAnimatedTruckLayer(truckId, roadCoordinates)
+    map.addLayer(truckLayer)
+    activeTruckIds.add(truckId)
+  }
+  
   return true
 }
 
@@ -171,6 +181,18 @@ export function clearAllRoutes(map: Map): void {
     }
   })
   
+  activeTruckIds.forEach(truckId => {
+    try {
+      if (map.getLayer(truckId)) {
+        map.removeLayer(truckId)
+      }
+    } catch (error) {
+      console.error(`Error clearing truck ${truckId}:`, error)
+    }
+  })
+  
+  clearAllTruckAnimations(map)
   activeRouteIds.clear()
+  activeTruckIds.clear()
 }
 

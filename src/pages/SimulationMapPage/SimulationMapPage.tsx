@@ -46,12 +46,23 @@ function SimulationMapContent() {
       const map = mapRef.current
       const filteredRoutes = routes.routes.filter(r => r.day === selectedDay)
       
+      const draw = async () => {
+        await drawSimulationRoutes(map, filteredRoutes, true)
+      }
+      
       if (map.isStyleLoaded()) {
-        await drawSimulationRoutes(map, filteredRoutes)
+        draw()
       } else {
-        map.once('style.load', async () => {
-          await drawSimulationRoutes(map, filteredRoutes)
-        })
+        // Wait for style to load
+        const checkStyleLoaded = setInterval(() => {
+          if (map.isStyleLoaded()) {
+            clearInterval(checkStyleLoaded)
+            draw()
+          }
+        }, 100)
+        
+        // Cleanup interval after 5 seconds max
+        setTimeout(() => clearInterval(checkStyleLoaded), 5000)
       }
     }
 
