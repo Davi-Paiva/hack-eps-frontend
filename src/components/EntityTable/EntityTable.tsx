@@ -71,10 +71,14 @@ function EntityTable<T>({ fetcher, columns, rowKey, tableMaxH = '420px', searchQ
   }, [items, searchQuery, filterFn])
 
   const handleContainerClick = (e: React.MouseEvent) => {
-    const target = e.target as HTMLElement | null
-    if (!target) return
-    // if the click is not inside a table row, clear selection
-    if (!target.closest || !target.closest('tr')) {
+    // e.target can be a Text node (nodeType === 3) which doesn't implement Element.closest.
+    // Walk up to the nearest Element ancestor, then check for a containing <tr>.
+    let node: Node | null = e.target as Node | null
+    while (node && node.nodeType !== 1) {
+      node = node.parentNode
+    }
+    const el = node as Element | null
+    if (!el || !el.closest('tr')) {
       setSelectedKey(null)
       onRowSelect?.(null as any)
     }

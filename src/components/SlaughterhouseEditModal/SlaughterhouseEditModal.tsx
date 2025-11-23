@@ -18,6 +18,7 @@ import {
 } from '@chakra-ui/react'
 import type { Slaughterhouse } from '../../types/slaughterhouse'
 import { slaughterhouseService } from '../../services/slaughterhouseService'
+import resolveId from '../../utils/idResolver'
 
 type Props = {
   isOpen: boolean
@@ -45,8 +46,8 @@ const SlaughterhouseEditModal: React.FC<Props> = ({ isOpen, onClose, slaughterho
 
   const handleSave = async () => {
     if (!slaughterhouse) return
-    // prefer domain-specific id if present, otherwise use MongoDB _id
-    const idToUse = (slaughterhouse as any).slaughterhouse_id ?? slaughterhouse._id
+    // prefer non-empty domain-specific id if present, otherwise use MongoDB _id
+    const idToUse = resolveId(slaughterhouse, ['slaughterhouse_id', '_id'])
     if (!idToUse) return
     setSaving(true)
     const payload: Partial<Slaughterhouse> = {

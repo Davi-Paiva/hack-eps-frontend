@@ -7,6 +7,7 @@ import SlaughterhousesPage from './pages/SlaughterhousesPage/SlaughterhousesPage
 import SimulationPage from './pages/SimulationPage/SimulationPage'
 import SimulationMapPage from './pages/SimulationMapPage/SimulationMapPage'
 import StartSimulationPage from "./pages/StartSimulationPage/StartSimulationPage";
+import HomePage from "./pages/HomePage/HomePage";
 
 function App() {
   
@@ -17,7 +18,8 @@ function App() {
 
         <main className="main-content">
           <Routes>
-            <Route path="*" element={<MapPage />} />
+            
+            <Route path="/" element={<HomePage />} />
             <Route path="/map" element={<MapPage/>} />
             <Route path="/farms" element={<FarmsPage/>} />
             <Route path="/slaughterhouses" element={<SlaughterhousesPage/>} />

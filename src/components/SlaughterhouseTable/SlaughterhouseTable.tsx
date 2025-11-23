@@ -1,6 +1,7 @@
 import React from 'react'
 import type { Slaughterhouse } from '../../types/slaughterhouse'
 import { slaughterhouseService } from '../../services/slaughterhouseService'
+import resolveId from '../../utils/idResolver'
 import EntityTable from '../EntityTable/EntityTable'
 
 type Props = {
@@ -16,7 +17,7 @@ const SlaughterhouseTable: React.FC<Props> = ({ searchQuery, onRowSelect, reload
       searchQuery={searchQuery}
       reloadKey={reloadKey}
       onRowSelect={onRowSelect}
-      rowKey={(s: Slaughterhouse) => s._id ?? s.name}
+      rowKey={(s: Slaughterhouse) => resolveId(s, ['slaughterhouse_id', '_id']) ?? s.name}
       columns={[
         { header: 'Name', accessor: (s: Slaughterhouse) => s.name },
         { header: 'Latitude', accessor: (s: Slaughterhouse) => s.lat },

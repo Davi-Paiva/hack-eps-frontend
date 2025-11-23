@@ -59,4 +59,25 @@ export const slaughterhouseService = {
       return false
     }
   }
+
+  ,
+
+  async delete(id: string): Promise<boolean> {
+    try {
+      // Try domain-specific delete endpoint first (expects slaughterhouse_id query param).
+      const queryUrl = `${endpoint}/delete?slaughterhouse_id=${encodeURIComponent(id)}`
+      console.debug('slaughterhouseService.delete: trying', queryUrl)
+      let response = await fetch(queryUrl, { method: 'DELETE' })
+      if (response.ok) return true
+
+      // If that failed, fallback to RESTful DELETE /api/slaughterhouses/:id
+      const restUrl = `${endpoint}/${encodeURIComponent(id)}`
+      console.debug('slaughterhouseService.delete: fallback to', restUrl, 'status from query:', response.status)
+      response = await fetch(restUrl, { method: 'DELETE' })
+      return response.ok
+    } catch (error) {
+      console.error('Error deleting slaughterhouse:', error)
+      return false
+    }
+  }
 }

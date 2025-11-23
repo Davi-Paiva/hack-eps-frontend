@@ -46,8 +46,9 @@ const FarmEditModal: React.FC<Props> = ({ isOpen, onClose, farm, onSaveSuccess }
   const handleSave = async () => {
     console.log("farm:", farm)
     if (!farm) return
-    // prefer domain-specific id if present, otherwise use MongoDB _id
-    const idToUse = (farm as any)._id ?? farm._id
+    // prefer non-empty domain id `farm_id`, otherwise fall back to Mongo `_id`
+    const rawId = (farm as any).farm_id
+    const idToUse = rawId && String(rawId).trim().length > 0 ? String(rawId).trim() : farm._id
     if (!idToUse) return
     setSaving(true)
     const payload: Partial<Farm> = {
