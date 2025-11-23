@@ -26,11 +26,6 @@ export default function NavLinks(){
           Slaughterhouses
         </Button>
       </Link>
-          <Link to="/tables">
-            <Button variant="ghost" size="md" className="navbar-button">
-              Tables
-            </Button>
-          </Link>
 
       <Link to="/simulation">
         <Button variant="ghost" size="md" className="navbar-button">
