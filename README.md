@@ -1,105 +1,124 @@
-# Livestock Management & Simulation System
+## hack-eps-frontend
 
-A modern web application for managing farms, slaughterhouses, and simulating livestock transportation routes with interactive 3D mapping visualization.
+Frontend application for the Hack EPS project — React + TypeScript + Vite + Chakra UI.
 
-## Features
+This README documents how to run the app locally and how to test the recent farm changes (new fields: inventory and average weight).
 
-- **Farm Management**: Add, edit, and track livestock farms with detailed information
-- **Slaughterhouse Management**: Manage slaughterhouse facilities and their capacities
-- **Interactive Map**: Visualize farms and slaughterhouses using Mapbox GL with 3D models
-- **Route Simulation**: Simulate transportation routes and logistics between farms and slaughterhouses
-- **Day-by-Day Simulation**: Track simulation progress across multiple days with real-time updates
-- **Data Import**: Import farm and slaughterhouse data from CSV files
-- **Responsive UI**: Built with Chakra UI for a modern, accessible interface
+## Quick Start
 
-## Tech Stack
+Install dependencies and run the dev server:
 
-- **Framework**: React 19.2 with TypeScript
-- **Build Tool**: Vite 7.2
-- **UI Library**: Chakra UI 2.10
-- **Mapping**: Mapbox GL 3.16
-- **3D Graphics**: Three.js 0.181
-- **Routing**: React Router DOM 7.9
-- **Charts**: Recharts 3.4
-- **Styling**: Emotion (CSS-in-JS)
-
-## Prerequisites
-
-- Node.js (v16 or higher)
-- npm or yarn
-- Mapbox API token (for map functionality)
-- Backend API running on `http://127.0.0.1:8000` (for simulation features)
-
-## Installation
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd hack-eps-frontend
-```
-
-2. Install dependencies:
-```bash
+```powershell
 npm install
-```
-
-3. Configure environment variables (if needed for Mapbox token)
-
-## Available Scripts
-
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Build for production (compiles TypeScript and bundles)
-- `npm run preview` - Preview production build locally
-- `npm run lint` - Run ESLint to check code quality
-
-## Development
-
-Start the development server:
-```bash
 npm run dev
 ```
 
-The application will be available at `http://localhost:5173` (or another port if 5173 is busy).
+Open the app in your browser (Vite will show the local URL, usually `http://localhost:5173`).
 
-## Project Structure
+## New/Important Features
 
-```
-src/
-├── components/       # Reusable UI components (cards, tables, modals, etc.)
-├── pages/           # Page components for routing
-├── services/        # API service layer (farm, slaughterhouse, simulation)
-├── types/           # TypeScript type definitions
-├── utils/           # Utility functions (map helpers, route drawing, etc.)
-├── contexts/        # React context providers (MapContext)
-└── assets/          # Static assets
-```
+- These fields are available in the UI:
+  - Add Farm modal and Edit Farm modal include inputs for Inventory and Avg Weight.
+  - Farm list/table shows Inventory and Avg Weight columns.
+  - Map popups (entity cards) display Inventory and Avg Weight if present.
 
-## Key Pages
+## How to test create / edit (frontend)
 
-- `/` - Home page with application overview
-- `/map` - Interactive map view of farms and slaughterhouses
-- `/farms` - Farm management interface
-- `/slaughterhouses` - Slaughterhouse management interface
-- `/start-simulation` - Configure and start simulation
-- `/simulation` - View simulation results and analytics
-- `/simulation-map` - Visualize simulation routes on map
+1. Start the dev server:
 
-## API Integration
-
-The application connects to a backend API at `http://127.0.0.1:8000/api/` with the following endpoints:
-
-- **Farms**: `/farms` (GET, POST, PUT, DELETE)
-- **Slaughterhouses**: `/slaughterhouses` (GET, POST, PUT, DELETE)
-- **Simulation**: `/simulation/get-routes`, `/simulation/simulate/{day}`
-
-## Building for Production
-
-```bash
-npm run build
+```powershell
+npm run dev
 ```
 
-The built files will be in the `dist/` directory, ready to be deployed to any static hosting service.
+2. Open the Farms page in the app.
+3. Click `Add Farm` and fill the form including `Inventory (pigs)` and `Avg Weight (kg)`. Submit.
+4. Click a farm and open `Edit` to change the Inventory or Avg Weight — save and confirm changes appear in the table and on the map popup.
 
-## License
+If something doesn't persist, open the browser devtools Console and Network tabs to inspect the POST/PUT request payloads.
 
-This project was created for HackEPS.
+## API endpoints (frontend expects)
+
+- GET /api/farms — list farms
+- POST /api/farms/init-farm — create farm (JSON body)
+- PUT /api/farms/:id/edit — update farm (JSON body)
+- DELETE /api/farms/delete?farm_id=... — domain-style delete (fallbacks exist)
+- DELETE /api/farms/:id — fallback RESTful delete
+- POST /api/farms/import-csv — import CSV (FormData with `file` field)
+
+When creating/updating a farm, the frontend sends JSON with fields such as:
+
+```json
+{
+  "name": "My Farm",
+  "lat": 41.6,
+  "lon": 0.6,
+  "capacity": 1000,
+  "inventory_pigs": 500,
+  "avg_weight_kg": 60.5
+}
+```
+
+## Debugging client requests
+
+- The frontend logs request payloads for create/update in the browser console when using the default dev build. Look for `farmService.create payload:` and `farmService.update id:` logs.
+- If the payload contains the new fields but the database shows no values, the problem is server-side (schema or handler missing fields).
+
+## Backend persistence guidance
+
+Make sure your backend accepts and persists the two new fields. Example snippets for common stacks:
+
+- Express + Mongoose (Node.js)
+
+  1. Add schema fields to your Mongoose model for Farm:
+
+  ```js
+  const FarmSchema = new mongoose.Schema({
+    name: String,
+    lat: Number,
+    lon: Number,
+    capacity: Number,
+    inventory_pigs: { type: Number, default: 0 },
+    avg_weight_kg: { type: Number, default: 0 },
+    // ... other fields
+  })
+  ```
+
+  2. In create/update handlers, read these values from `req.body` and store them:
+
+  ```js
+  const { name, lat, lon, capacity, inventory_pigs, avg_weight_kg } = req.body
+  const farm = new Farm({ name, lat, lon, capacity, inventory_pigs, avg_weight_kg })
+  await farm.save()
+  ```
+
+- FastAPI + Pydantic (Python)
+
+  1. Update your Pydantic model/schemas to include optional fields:
+
+  ```py
+  class FarmCreate(BaseModel):
+      name: str
+      lat: float
+      lon: float
+      capacity: int
+      inventory_pigs: Optional[int] = 0
+      avg_weight_kg: Optional[float] = 0.0
+  ```
+
+  2. Use these fields when inserting/updating the DB record.
+
+## CSV import
+
+- The frontend posts files to `/api/farms/import-csv` as FormData with field name `file`.
+- Ensure your import routine maps CSV column names (e.g., `inventory`, `inventory_pigs`, `avg_weight`, `avg_weight_kg`) to the DB fields.
+
+## Next steps & troubleshooting
+
+- Run the dev server and test create/edit flows. If edits do not persist:
+  - Confirm the network request payload includes `inventory_pigs` and `avg_weight_kg` (use Browser DevTools -> Network).
+  - Inspect backend logs; verify request body parsing (JSON) is enabled and your create/update handlers store the fields.
+- If you want, tell me which backend stack you use and I can prepare a ready-to-apply patch for the server.
+
+## Contributing
+
+Pull requests welcome — please run `npm install` and `npm run dev` locally and follow the patterns already in the codebase.

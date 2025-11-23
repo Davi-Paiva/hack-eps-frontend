@@ -31,6 +31,8 @@ const FarmAddModal: React.FC<Props> = ({ isOpen, onClose, onCreateSuccess }) => 
   const [lat, setLat] = React.useState<string>('')
   const [lon, setLon] = React.useState<string>('')
   const [capacity, setCapacity] = React.useState<string>('')
+  const [inventory, setInventory] = React.useState<string>('')
+  const [avgWeight, setAvgWeight] = React.useState<string>('')
   const [saving, setSaving] = React.useState(false)
 
   const reset = () => {
@@ -38,6 +40,8 @@ const FarmAddModal: React.FC<Props> = ({ isOpen, onClose, onCreateSuccess }) => 
     setLat('')
     setLon('')
     setCapacity('')
+    setInventory('')
+    setAvgWeight('')
   }
 
   const handleCreate = async () => {
@@ -47,6 +51,8 @@ const FarmAddModal: React.FC<Props> = ({ isOpen, onClose, onCreateSuccess }) => 
       lat: Number(lat),
       lon: Number(lon),
       capacity: Number(capacity),
+      ...(inventory.trim() ? { inventory_pigs: Number(inventory) } : {}),
+      ...(avgWeight.trim() ? { avg_weight_kg: Number(avgWeight) } : {}),
     }
     const ok = await farmService.create(payload as Farm)
     setSaving(false)
@@ -87,6 +93,18 @@ const FarmAddModal: React.FC<Props> = ({ isOpen, onClose, onCreateSuccess }) => 
             <FormControl>
               <FormLabel color="gray.300">Capacity</FormLabel>
               <NumberInput value={capacity} onChange={(v) => setCapacity(v)}>
+                <NumberInputField bg="gray.800" color="white" borderColor="gray.600" />
+              </NumberInput>
+            </FormControl>
+            <FormControl>
+              <FormLabel color="gray.300">Inventory (pigs)</FormLabel>
+              <NumberInput value={inventory} onChange={(v) => setInventory(v)}>
+                <NumberInputField bg="gray.800" color="white" borderColor="gray.600" />
+              </NumberInput>
+            </FormControl>
+            <FormControl>
+              <FormLabel color="gray.300">Avg Weight (kg)</FormLabel>
+              <NumberInput value={avgWeight} onChange={(v) => setAvgWeight(v)}>
                 <NumberInputField bg="gray.800" color="white" borderColor="gray.600" />
               </NumberInput>
             </FormControl>

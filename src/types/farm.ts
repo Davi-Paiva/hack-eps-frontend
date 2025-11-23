@@ -18,4 +18,6 @@ export interface FarmFormData {
   lat: string
   lon: string
   capacity: string
+  inventory?: string
+  avgWeight?: string
 }

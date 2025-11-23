@@ -9,7 +9,7 @@ interface ImportFarmProps {
 }
 
 export default function ImportFarm({ onSuccess }: ImportFarmProps) {
-  const [form, setForm] = useState<FarmFormData>({ name: '', lat: '', lon: '', capacity: '' })
+  const [form, setForm] = useState<FarmFormData>({ name: '', lat: '', lon: '', capacity: '', inventory: '', avgWeight: '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isUploadingCSV, setIsUploadingCSV] = useState(false)
   const toast = useToast()
@@ -25,7 +25,9 @@ export default function ImportFarm({ onSuccess }: ImportFarmProps) {
       name: form.name,
       lat: parseFloat(form.lat),
       lon: parseFloat(form.lon),
-      capacity: parseInt(form.capacity)
+      capacity: parseInt(form.capacity),
+      ...(form.inventory ? { inventory_pigs: parseInt(form.inventory) } : {}),
+      ...(form.avgWeight ? { avg_weight_kg: parseFloat(form.avgWeight) } : {}),
     })
 
     toast({
@@ -36,7 +38,7 @@ export default function ImportFarm({ onSuccess }: ImportFarmProps) {
     })
 
     if (success) {
-      setForm({ name: '', lat: '', lon: '', capacity: '' })
+      setForm({ name: '', lat: '', lon: '', capacity: '', inventory: '', avgWeight: '' })
       onSuccess?.()
     }
 
@@ -94,10 +96,12 @@ export default function ImportFarm({ onSuccess }: ImportFarmProps) {
       {/* Manual Entry Form */}
       <VStack as="form" spacing={5} w="full" onSubmit={handleSubmit}>
         <Text fontWeight="bold" fontSize="md" color="gray.300">Or add manually</Text>
-      <FormField label="Farm Name" value={form.name} onChange={update('name')} placeholder="Enter farm name" />
-      <FormField label="Latitude" value={form.lat} onChange={update('lat')} placeholder="41.608433" isNumber />
-      <FormField label="Longitude" value={form.lon} onChange={update('lon')} placeholder="0.623446" isNumber />
-      <FormField label="Capacity" value={form.capacity} onChange={update('capacity')} placeholder="1000" isNumber />
+        <FormField label="Farm Name" value={form.name} onChange={update('name')} placeholder="Enter farm name" />
+        <FormField label="Latitude" value={form.lat} onChange={update('lat')} placeholder="41.608433" isNumber />
+        <FormField label="Longitude" value={form.lon} onChange={update('lon')} placeholder="0.623446" isNumber />
+        <FormField label="Capacity" value={form.capacity} onChange={update('capacity')} placeholder="1000" isNumber />
+        <FormField label="Inventory (pigs)" value={form.inventory ?? ''} onChange={update('inventory')} placeholder="500" isNumber />
+        <FormField label="Avg Weight (kg)" value={form.avgWeight ?? ''} onChange={update('avgWeight')} placeholder="60.5" isNumber />
       <Button 
         type="submit" 
         size="lg" 
