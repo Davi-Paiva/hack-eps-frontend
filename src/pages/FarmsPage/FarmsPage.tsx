@@ -4,6 +4,8 @@ import FarmTable from '../../components/FarmTable/FarmTable'
 import BoxCard from '../../components/BoxCard/BoxCard'
 import SearchInput from '../../components/SearchInput/SearchInput'
 import EditButton from '../../components/EditButton/EditButton'
+import DeleteButton from '../../components/DeleteButton/DeleteButton'
+import { farmService } from '../../services/farmService'
 import FarmAddModal from '../../components/FarmAddModal/FarmAddModal'
 import { Button } from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
@@ -16,6 +18,32 @@ const FarmsPage: React.FC = () => {
   const [isEditOpen, setIsEditOpen] = React.useState(false)
   const [isAddOpen, setIsAddOpen] = React.useState(false)
   const [reloadKey, setReloadKey] = React.useState(0)
+
+  const handleDelete = async () => {
+    if (!selectedFarm) return
+    // prefer non-empty domain id `farm_id`, otherwise fall back to Mongo `_id`
+    const raw = (selectedFarm as any).farm_id
+    const idToUse = raw && String(raw).trim().length > 0 ? String(raw).trim() : selectedFarm._id
+    console.log('handleDelete: selectedFarm idToUse=', idToUse, 'selectedFarm=', selectedFarm)
+    if (!idToUse) {
+      console.warn('No usable id found for selected farm')
+      return
+    }
+    const ok = window.confirm(`Delete farm "${selectedFarm.name}"?`)
+    if (!ok) return
+    try {
+      const success = await farmService.delete(String(idToUse))
+      if (success) {
+        setReloadKey((r) => r + 1)
+        setSelectedFarm(null)
+      } else {
+        window.alert('Failed to delete farm')
+      }
+    } catch (err) {
+      console.error(err)
+      window.alert('Error deleting farm')
+    }
+  }
 
   return (
     <Box p={6}>
@@ -36,6 +64,7 @@ const FarmsPage: React.FC = () => {
                   Add Farm
                 </Button>
                 <EditButton onClick={() => setIsEditOpen(true)} isDisabled={!selectedFarm} />
+                <DeleteButton onClick={handleDelete} isDisabled={!selectedFarm} size="sm" />
               </Box>
             </Flex>
           </Box>
