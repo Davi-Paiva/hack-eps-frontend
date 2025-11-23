@@ -1,73 +1,105 @@
-# React + TypeScript + Vite
+# Livestock Management & Simulation System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern web application for managing farms, slaughterhouses, and simulating livestock transportation routes with interactive 3D mapping visualization.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Farm Management**: Add, edit, and track livestock farms with detailed information
+- **Slaughterhouse Management**: Manage slaughterhouse facilities and their capacities
+- **Interactive Map**: Visualize farms and slaughterhouses using Mapbox GL with 3D models
+- **Route Simulation**: Simulate transportation routes and logistics between farms and slaughterhouses
+- **Day-by-Day Simulation**: Track simulation progress across multiple days with real-time updates
+- **Data Import**: Import farm and slaughterhouse data from CSV files
+- **Responsive UI**: Built with Chakra UI for a modern, accessible interface
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Framework**: React 19.2 with TypeScript
+- **Build Tool**: Vite 7.2
+- **UI Library**: Chakra UI 2.10
+- **Mapping**: Mapbox GL 3.16
+- **3D Graphics**: Three.js 0.181
+- **Routing**: React Router DOM 7.9
+- **Charts**: Recharts 3.4
+- **Styling**: Emotion (CSS-in-JS)
 
-## Expanding the ESLint configuration
+## Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Node.js (v16 or higher)
+- npm or yarn
+- Mapbox API token (for map functionality)
+- Backend API running on `http://127.0.0.1:8000` (for simulation features)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Installation
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd hack-eps-frontend
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+2. Install dependencies:
+```bash
+npm install
 ```
+
+3. Configure environment variables (if needed for Mapbox token)
+
+## Available Scripts
+
+- `npm run dev` - Start development server with hot reload
+- `npm run build` - Build for production (compiles TypeScript and bundles)
+- `npm run preview` - Preview production build locally
+- `npm run lint` - Run ESLint to check code quality
+
+## Development
+
+Start the development server:
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:5173` (or another port if 5173 is busy).
+
+## Project Structure
+
+```
+src/
+├── components/       # Reusable UI components (cards, tables, modals, etc.)
+├── pages/           # Page components for routing
+├── services/        # API service layer (farm, slaughterhouse, simulation)
+├── types/           # TypeScript type definitions
+├── utils/           # Utility functions (map helpers, route drawing, etc.)
+├── contexts/        # React context providers (MapContext)
+└── assets/          # Static assets
+```
+
+## Key Pages
+
+- `/` - Home page with application overview
+- `/map` - Interactive map view of farms and slaughterhouses
+- `/farms` - Farm management interface
+- `/slaughterhouses` - Slaughterhouse management interface
+- `/start-simulation` - Configure and start simulation
+- `/simulation` - View simulation results and analytics
+- `/simulation-map` - Visualize simulation routes on map
+
+## API Integration
+
+The application connects to a backend API at `http://127.0.0.1:8000/api/` with the following endpoints:
+
+- **Farms**: `/farms` (GET, POST, PUT, DELETE)
+- **Slaughterhouses**: `/slaughterhouses` (GET, POST, PUT, DELETE)
+- **Simulation**: `/simulation/get-routes`, `/simulation/simulate/{day}`
+
+## Building for Production
+
+```bash
+npm run build
+```
+
+The built files will be in the `dist/` directory, ready to be deployed to any static hosting service.
+
+## License
+
+This project was created for HackEPS.
